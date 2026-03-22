@@ -51,7 +51,8 @@ public class AccountController {
         this.moneyUtil = moneyUtil;
         this.fileService = fileService;
         this.savePath = savePath;
-
+        
+        this.view.getBalanceCheckBox().setOnAction(e -> refreshBalanceLabels());
         this.view.getEntriesTable().setItems(entries);
         this.view.getSubmitButton().setOnAction(e -> handleSubmit());
         this.view.getDeleteButton().setOnAction(e -> handleDelete());
@@ -182,9 +183,29 @@ public class AccountController {
 		}
 		// Aktualliseren der Kontostände
 		private void refreshBalanceLabels() {
-			view.getGesamtLabel().setText( moneyUtil.formatAmount(manager.getCurrentAccountBalance()) + " €");
-			view.getTobiasLabel().setText( moneyUtil.formatAmount(manager.getCurrentTobiasBalance()) + " €");
-			view.getBerndLabel().setText( moneyUtil.formatAmount(manager.getCurrentBerndBalance()) + " €");
+			boolean ausblenden = updateBalanceLabels();
+			if(ausblenden) {
+				view.getGesamtLabel().setText("•••••••••••");
+				view.getTobiasLabel().setText("•••••••••••");
+				view.getBerndLabel().setText("•••••••••••");
+				view.getBalanceCheckBox().setText("Kontostände einblenden");
+			}else {
+				view.getGesamtLabel().setText( moneyUtil.formatAmount(manager.getCurrentAccountBalance()) + " €");
+				view.getTobiasLabel().setText( moneyUtil.formatAmount(manager.getCurrentTobiasBalance()) + " €");
+				view.getBerndLabel().setText( moneyUtil.formatAmount(manager.getCurrentBerndBalance()) + " €");
+				view.getBalanceCheckBox().setText("Kontostände ausblenden");
+			}
+		}
+			
+			
+		//Ausblenden von Kontolabel#
+			
+		private boolean updateBalanceLabels() {
+			if(view.getBalanceCheckBox().isSelected() == false) {
+				return false;
+			}else {
+				return true;
+			}
 		}
 		//Intelligente Oberfläche
 		private void updateFormMode() {
@@ -451,5 +472,7 @@ public class AccountController {
 	        e.printStackTrace();
 	    }
 	}
+	
+	
 
 }

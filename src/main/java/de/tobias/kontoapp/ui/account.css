@@ -239,3 +239,31 @@
 .konto-spinner .decrement-arrow-button:hover {
     -fx-background-color: #f8f7fc;
 }
+.konto-check-box {
+    -fx-text-fill: #374151;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.konto-check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+
+.konto-check-box:hover .box {
+    -fx-border-color: #b8addd;
+}
+
+.konto-check-box:selected .box {
+    -fx-background-color: #dcd6f7;
+    -fx-border-color: #dcd6f7;
+}
+
+.konto-check-box .mark {
+    -fx-background-color: white;
+}

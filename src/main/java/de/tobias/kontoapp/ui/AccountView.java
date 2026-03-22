@@ -4,8 +4,9 @@ import java.math.RoundingMode;
 import java.time.Month;
 
 import javafx.beans.property.SimpleStringProperty;
-
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -15,6 +16,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.Node;
@@ -83,6 +86,8 @@ public class AccountView {
     private HBox descriptionRow;
     private HBox amountRow;
     private HBox dateRow;
+    
+    private CheckBox balanceCheckBox;
 
     
 
@@ -141,9 +146,20 @@ public class AccountView {
         tobias = new Label("Tobias: ");
         bernd = new Label("Bernd: ");
         gesamt = new Label("Gesamt: ");
+        balanceCheckBox = new CheckBox("");
         namenBalanceBox = new VBox(5, gesamt, tobias, bernd);
         werteBalanceBox = new VBox(5, gesamtLabel, tobiasLabel, berndLabel);
-        HBox bilanceBox = new HBox(30, namenBalanceBox, werteBalanceBox);
+        HBox balanceValuesBox = new HBox(30, namenBalanceBox, werteBalanceBox);
+        balanceValuesBox.setAlignment(Pos.CENTER_LEFT);
+        
+        
+        HBox balanceRow = new HBox(20, balanceValuesBox, balanceCheckBox);
+        balanceRow.setAlignment(Pos.CENTER_LEFT);
+        
+        namenBalanceBox.setMinWidth(50);
+        werteBalanceBox.setMinWidth(120);
+        balanceCheckBox.setMinWidth(80);
+        
         
         ownerLabel = new Label("Zuordnung: ");
         ownerBox = new ComboBox<>();
@@ -250,7 +266,7 @@ public class AccountView {
 
         HBox buttonRow = new HBox(10, submitButton, editButton, cancelEditButton, deleteButton);
 
-        VBox balanceCard = createCard(balanceTitle, bilanceBox);
+        VBox balanceCard = createCard(balanceTitle, balanceRow);
         VBox formCard = createCard(
                 formTitle,
                 typRow,
@@ -282,6 +298,8 @@ public class AccountView {
 
         buttonRow.getStyleClass().add("button-row");
         
+        
+        balanceCheckBox.getStyleClass().add("konto-check-box");
         
 
         gesamtLabel.getStyleClass().add("balance-label");
@@ -324,7 +342,39 @@ public class AccountView {
         root.setFocusTraversable(true);
     }
 
-    private VBox createCard(Label title, Node... content) {
+    public Label getFormTitle() {
+		return formTitle;
+	}
+
+	public VBox getWerteBalanceBox() {
+		return werteBalanceBox;
+	}
+
+	public VBox getNamenBalanceBox() {
+		return namenBalanceBox;
+	}
+
+	public Label getTobias() {
+		return tobias;
+	}
+
+	public Label getBernd() {
+		return bernd;
+	}
+
+	public Label getGesamt() {
+		return gesamt;
+	}
+
+	public HBox getTypRow() {
+		return typRow;
+	}
+
+	public CheckBox getBalanceCheckBox() {
+		return balanceCheckBox;
+	}
+
+	private VBox createCard(Label title, Node... content) {
         VBox card = new VBox(12);
         card.getChildren().add(title);
         card.getChildren().addAll(content);
