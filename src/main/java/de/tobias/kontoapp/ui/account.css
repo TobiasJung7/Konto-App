@@ -1,0 +1,241 @@
+.root-pane {
+    -fx-background-color: #ece6f7;
+    -fx-padding: 20;
+    -fx-spacing: 16;
+}
+
+.card {
+    -fx-background-color:#f6f6f6;
+    -fx-background-radius: 14;
+    -fx-padding: 16;
+    -fx-spacing: 12;
+}
+
+.card-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.status-label {
+    -fx-font-weight: bold;
+}
+
+.balance-label {
+    -fx-font-size: 15px;
+   
+}
+.booking-label{
+	-fx-font-size: 15px;
+}
+
+.button-row {
+    -fx-spacing: 10;
+}
+
+
+
+.primary-button {
+    -fx-background-color: #0056b3;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+.primary-button:hover {
+	-fx-background-color: #004494;
+	
+}
+
+.secondary-button {
+   -fx-background-color: #927fbf;
+    -fx-text-fill: white;
+    -fx-background-radius: 10; 
+}
+.secondary-button:hover{
+    -fx-background-color: #7f6aa8;
+}
+
+/* #C94A4A   #Cd0000;*/
+.danger-button {
+	
+    -fx-background-color: #C94A4A;
+    -fx-text-fill: white;
+    -fx-background-radius: 10; 
+}
+.danger-button:hover {
+	-fx-background-color: #A30000;
+}
+.danger-button:pressed{
+	-fx-background-color: #7a1a14
+}
+
+.entries-table {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+}
+
+.input-row {
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+    -fx-font-size: 14px;
+}
+
+.konto-input-field {
+    -fx-background-color: white;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1.5;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-padding: 6 8 6 8;
+}
+
+.konto-input-field:hover {
+    -fx-border-color: #b8addd;
+}
+
+.konto-input-field:focused {
+    -fx-border-color: #dcd6f7;
+}
+
+.date-picker {
+    -fx-background-color: white;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1.5;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+}
+
+.date-picker:hover {
+    -fx-border-color: #b8addd;
+}
+
+.date-picker:focused {
+    -fx-border-color: #dcd6f7;
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-padding: 6 8 6 8;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-padding: 0 10 0 10;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #f8f7fc;
+}
+.konto-combo-box {
+    -fx-background-color: white;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1.5;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+
+.konto-combo-box:hover {
+    -fx-border-color: #b8addd;
+}
+
+.konto-combo-box:focused {
+    -fx-border-color: #dcd6f7;
+}
+
+.konto-combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #374151;
+    -fx-padding: 6 8 6 8;
+    -fx-background-radius: 4;
+}
+
+.konto-combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0 4 4 0;
+}
+
+.konto-combo-box:hover .arrow-button {
+    -fx-background-color: #f8f7fc;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: white;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1.5;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #374151;
+    -fx-padding: 8 10 8 10;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #f3f0ff;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #dcd6f7;
+    -fx-text-fill: #1f2937;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+.konto-spinner {
+    -fx-background-color: white;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1.5;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+}
+
+.konto-spinner:hover {
+    -fx-border-color: #b8addd;
+}
+
+.konto-spinner:focused {
+    -fx-border-color: #dcd6f7;
+}
+
+.konto-spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-padding: 6 8 6 8;
+}
+
+.konto-spinner .increment-arrow-button,
+.konto-spinner .decrement-arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0 8 0 8;
+}
+
+.konto-spinner .increment-arrow-button:hover,
+.konto-spinner .decrement-arrow-button:hover {
+    -fx-background-color: #f8f7fc;
+}

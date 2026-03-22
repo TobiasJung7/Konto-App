@@ -62,14 +62,17 @@ public class UiEntryMapper {
 	}
 	
 	private String mapTransactionDetails(Transaction tx) {
+		MoneyUtil moneyUtil = new MoneyUtil();
 		if (tx.getType() == TransactionType.Interest) {
-		    return "Brutto: " + formatMoney(tx.getGrossInterestRate())
-		         + " | Steuer Bernd: " + formatMoney(tx.getTaxBernd())
-		         + " | Tobias: " + formatMoney(tx.getTobiasSplit())
-		         + " | Bernd: " + formatMoney(tx.getBerndSplit());
-		}else return "";
+		    return "Steuer Bernd: " + moneyUtil.formatAmount(tx.getTaxBernd())
+		         + " | Tobias: " + moneyUtil.formatAmount(tx.getTobiasSplit())
+		         + " | Bernd: " + moneyUtil.formatAmount(tx.getBerndSplit());
+		}
+		if (tx.getType() == TransactionType.Transfer && tx.getBerndSplit() == tx.getBerndSplit()) {
+			return "Umbuchungssumme: " + moneyUtil.formatAmount(tx.getTobiasSplit());
+		}
+		else return " - ";
+		
 	}
-	private String formatMoney(BigDecimal value) {
-	    return value.setScale(2, RoundingMode.HALF_UP).toPlainString() + " €";
-	}
+	
 }

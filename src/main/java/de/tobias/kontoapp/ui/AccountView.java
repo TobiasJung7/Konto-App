@@ -4,8 +4,7 @@ import java.math.RoundingMode;
 import java.time.Month;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -36,6 +35,7 @@ public class AccountView {
     private TableView<UiEntry> entriesTable;
 
     private Label statusLabel;
+    private Label formTitle;
 
     private Button submitButton;
     private Button deleteButton;
@@ -64,11 +64,15 @@ public class AccountView {
     private ComboBox <Month> monthBox;
     private Spinner<Integer> yearSpinner;
     
-    
+    private VBox werteBalanceBox;
+    private VBox namenBalanceBox;
 
     private Label gesamtLabel;
     private Label tobiasLabel;
     private Label berndLabel;
+    private Label tobias;
+    private Label bernd;
+    private Label gesamt;
     
     private HBox ownerRow;
     private HBox typRow;
@@ -79,56 +83,68 @@ public class AccountView {
     private HBox descriptionRow;
     private HBox amountRow;
     private HBox dateRow;
-   
+
+    
 
     public AccountView() {
         buildUi();
     }
 
     private void buildUi() {
+    	MoneyUtil moneyUtil = new MoneyUtil();
         entriesTable = new TableView<>();
+
+        TableColumn<UiEntry, String> dateCol = new TableColumn<>("Datum");
+        dateCol.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getDate().toString()));
+        dateCol.setPrefWidth(110);
+        dateCol.setSortable(false);
 
         TableColumn<UiEntry, String> typeCol = new TableColumn<>("Typ");
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
         typeCol.setPrefWidth(110);
-        
-        TableColumn<UiEntry, String> descriptionCol = new TableColumn<>("Beschreibung");
-        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        descriptionCol.setPrefWidth(220);
-        
+        typeCol.setSortable(false);
+
         TableColumn<UiEntry, String> amountCol = new TableColumn<>("Betrag");
         amountCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(
-                        cellData.getValue().getAmount().setScale(2, RoundingMode.HALF_UP).toPlainString()
+                   moneyUtil.formatAmount(cellData.getValue().getAmount())
                 )
         );
         amountCol.setPrefWidth(100);
-
-        TableColumn<UiEntry, String> dateCol = new TableColumn<>("Datum");
-        dateCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getDate().toString())
-        );
-        dateCol.setPrefWidth(110);
+        amountCol.setSortable(false);
 
         TableColumn<UiEntry, String> ownerCol = new TableColumn<>("Aufteilung");
         ownerCol.setCellValueFactory(new PropertyValueFactory<>("owner"));
         ownerCol.setPrefWidth(150);
-        
+        ownerCol.setSortable(false);
+
         TableColumn<UiEntry, String> detailsCol = new TableColumn<>("Details");
         detailsCol.setCellValueFactory(new PropertyValueFactory<>("details"));
         detailsCol.setPrefWidth(420);
-        
-        entriesTable.getColumns().addAll(dateCol, typeCol, amountCol, ownerCol,detailsCol, descriptionCol);
+        detailsCol.setSortable(false);
 
+        TableColumn<UiEntry, String> descriptionCol = new TableColumn<>("Beschreibung");
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        descriptionCol.setPrefWidth(220);
+        descriptionCol.setSortable(false);
+
+        entriesTable.getColumns().addAll(dateCol, typeCol, amountCol, ownerCol, detailsCol, descriptionCol);
         entriesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         entriesTable.setPrefHeight(320);
         entriesTable.setPlaceholder(new Label("Noch keine Buchungen vorhanden"));
+        entriesTable.setSortPolicy(table -> false);
         
         gesamtLabel = new Label();
         tobiasLabel = new Label();
         berndLabel = new Label();
-        VBox balanceBox = new VBox(5, gesamtLabel, tobiasLabel, berndLabel);
-
+        tobias = new Label("Tobias: ");
+        bernd = new Label("Bernd: ");
+        gesamt = new Label("Gesamt: ");
+        namenBalanceBox = new VBox(5, gesamt, tobias, bernd);
+        werteBalanceBox = new VBox(5, gesamtLabel, tobiasLabel, berndLabel);
+        HBox bilanceBox = new HBox(30, namenBalanceBox, werteBalanceBox);
+        
         ownerLabel = new Label("Zuordnung: ");
         ownerBox = new ComboBox<>();
         ownerBox.setPromptText("Bitte wählen");
@@ -151,24 +167,23 @@ public class AccountView {
         typBox = new ComboBox<>();
         typBox.setPromptText("Bitte wählen");
         typBox.getItems().addAll("Einnahme", "Ausgabe", "Umbuchung", "Zinsen");
+
         
-        labelGrossInterest = new Label("Erhaltene Brutto Zinsen: ");
+        labelGrossInterest = new Label("Bruttozinsen: ");
         grossInterestField = new TextField();
         grossInterestField.setPromptText("z.B. 150 €");
-        
-        labelTaxBernd = new Label("Steuern Bernd: ");
+
+        labelTaxBernd = new Label("Steuer Bernd: ");
         taxBerndField = new TextField();
         taxBerndField.setPromptText("z.B. 50 €");
-        
-        labelInterestMonth = new Label("Monat an dem Zinsen angefallen sind: ");
+
+        labelInterestMonth = new Label("Zinsmonat: ");
         monthBox = new ComboBox<>();
         monthBox.getItems().addAll(Month.values());
-        monthBox.setPromptText("Bitte Wählen");
+        monthBox.setPromptText("Bitte wählen");
+
         yearSpinner = new Spinner<>(1900, 2100, 2026);
         yearSpinner.setEditable(true);
-        
-        
-        
 
         labelDatum = new Label("Datum: ");
         datumPicker = new DatePicker();
@@ -180,101 +195,143 @@ public class AccountView {
         submitButton = new Button("Abschicken");
         submitButton.setDefaultButton(true);
 
-        deleteButton = new Button("Ausgewählter Eintrag Löschen");
-        
+        deleteButton = new Button("Ausgewählten Eintrag löschen");
         editButton = new Button("Ausgewählte Buchung bearbeiten");
-        
         cancelEditButton = new Button("Bearbeiten abbrechen");
         cancelEditButton.setDisable(true);
-        
+
+        typRow = new HBox(15, labelTyp, typBox);
         ownerRow = new HBox(15, ownerLabel, ownerBox);
         transferRow = new HBox(15, transferLabel, transferBox);
         grossInterestRow = new HBox(15, labelGrossInterest, grossInterestField);
         taxBerndRow = new HBox(15, labelTaxBernd, taxBerndField);
-        interestMonthRow = new HBox(15, labelInterestMonth, monthBox, yearSpinner);
+        interestMonthRow = new HBox(8, labelInterestMonth, monthBox, yearSpinner);
         descriptionRow = new HBox(15, labelBeschreibung, beschreibung);
         amountRow = new HBox(15, labelBetrag, betrag);
         dateRow = new HBox(15, labelDatum, datumPicker);
-        typRow = new HBox(15,labelTyp, typBox);
+
+        labelTyp.setMinWidth(150);
+        ownerLabel.setMinWidth(150);
+        transferLabel.setMinWidth(150);
+        labelGrossInterest.setMinWidth(150);
+        labelTaxBernd.setMinWidth(150);
+        labelInterestMonth.setMinWidth(150);
+        labelBeschreibung.setMinWidth(150);
+        labelBetrag.setMinWidth(150);
+        labelDatum.setMinWidth(150);
+        
+        double selectionFieldWidth = 180;
+        double yearSpinnerWidth = 100;
+        double monthYearGap = 8;
+        double descriptionWidth = selectionFieldWidth + monthYearGap + yearSpinnerWidth;
+
+        typBox.setPrefWidth(selectionFieldWidth);
+        ownerBox.setPrefWidth(selectionFieldWidth);
+        transferBox.setPrefWidth(selectionFieldWidth);
+        grossInterestField.setPrefWidth(selectionFieldWidth);
+        taxBerndField.setPrefWidth(selectionFieldWidth);
+        datumPicker.setPrefWidth(selectionFieldWidth);
+        betrag.setPrefWidth(selectionFieldWidth);
+        
+        monthBox.setPrefWidth(selectionFieldWidth);
+        yearSpinner.setPrefWidth(yearSpinnerWidth);
+        
+        beschreibung.setPrefWidth(descriptionWidth);
         
         
-        labelBeschreibung.setMinWidth(180);
-        labelBetrag.setMinWidth(180);
-        labelTyp.setMinWidth(180);
-        ownerLabel.setMinWidth(180);
-        transferLabel.setMinWidth(180);
-        labelDatum.setMinWidth(180);
-        labelGrossInterest.setMinWidth(180);
-        labelTaxBernd.setMinWidth(180);
-        labelInterestMonth.setMinWidth(180);
-        
-        beschreibung.setPrefWidth(260);
-        betrag.setPrefWidth(160);
-        grossInterestField.setPrefWidth(160);
-        taxBerndField.setPrefWidth(160);
-        typBox.setPrefWidth(180);
-        ownerBox.setPrefWidth(180);
-        transferBox.setPrefWidth(180);
-        monthBox.setPrefWidth(180);
-        yearSpinner.setPrefWidth(100);
-        
-        statusLabel.setStyle("-fx-font-weight: bold;");
-        
+        beschreibung.setPrefHeight(36);
+        datumPicker.setPrefHeight(36);
+        monthBox.setPrefHeight(36);
+        yearSpinner.setPrefHeight(36);
+
         Label balanceTitle = new Label("Kontostände");
-        balanceTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-
-        Label formTitle = new Label("Buchung");
-        formTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-
+        formTitle = new Label("Buchung");
         Label tableTitle = new Label("Buchungen");
-        tableTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-        
-        
-        cancelEditButton.setDisable(true);
-        VBox balanceCard = createCard(balanceTitle, balanceBox);
 
         HBox buttonRow = new HBox(10, submitButton, editButton, cancelEditButton, deleteButton);
 
+        VBox balanceCard = createCard(balanceTitle, bilanceBox);
         VBox formCard = createCard(
-            formTitle,
-            typRow,
-            ownerRow,
-            transferRow,
-            grossInterestRow,
-            taxBerndRow,
-            interestMonthRow,
-            descriptionRow,
-            amountRow,
-            dateRow,
-            statusLabel,
-            buttonRow
+                formTitle,
+                typRow,
+                ownerRow,
+                transferRow,
+                grossInterestRow,
+                taxBerndRow,
+                interestMonthRow,
+                amountRow,
+                dateRow,
+                descriptionRow,
+                statusLabel,
+                buttonRow
         );
-
         VBox tableCard = createCard(tableTitle, entriesTable);
-       
-        root = new VBox(18, balanceCard, formCard, tableCard);
-        root.setPadding(new Insets(20));
-        root.setStyle("-fx-background-color: #f4f6f8;");
+
+        statusLabel.getStyleClass().add("status-label");
+
+        balanceTitle.getStyleClass().add("card-title");
+        formTitle.getStyleClass().add("card-title");
+        tableTitle.getStyleClass().add("card-title");
+
+        entriesTable.getStyleClass().add("entries-table");
+
+        submitButton.getStyleClass().add("primary-button");
+        editButton.getStyleClass().add("secondary-button");
+        cancelEditButton.getStyleClass().add("secondary-button");
+        deleteButton.getStyleClass().add("danger-button");
+
+        buttonRow.getStyleClass().add("button-row");
         
-        balanceBox.setStyle(
-        	    "-fx-background-color: white;" +
-        	    "-fx-padding: 12;" +
-        	    "-fx-border-color: #d9dee3;" +
-        	    "-fx-border-radius: 8;" +
-        	    "-fx-background-radius: 8;"
-        	);
+        
+
+        gesamtLabel.getStyleClass().add("balance-label");
+        tobiasLabel.getStyleClass().add("balance-label");
+        berndLabel.getStyleClass().add("balance-label");
+        tobias.getStyleClass().add("balance-label");
+        gesamt.getStyleClass().add("balance-label");
+        bernd.getStyleClass().add("balance-label");
+
+        typRow.getStyleClass().add("input-row");
+        ownerRow.getStyleClass().add("input-row");
+        transferRow.getStyleClass().add("input-row");
+        grossInterestRow.getStyleClass().add("input-row");
+        taxBerndRow.getStyleClass().add("input-row");
+        interestMonthRow.getStyleClass().add("input-row");
+        descriptionRow.getStyleClass().add("input-row");
+        amountRow.getStyleClass().add("input-row");
+        dateRow.getStyleClass().add("input-row");
+        
+        typBox.getStyleClass().add("konto-combo-box");
+        ownerBox.getStyleClass().add("konto-combo-box");
+        monthBox.getStyleClass().add("konto-combo-box");
+        transferBox.getStyleClass().add("konto-combo-box");
+       
+        yearSpinner.getStyleClass().add("konto-spinner");
+  
+        beschreibung.getStyleClass().add("konto-input-field");
+        betrag.getStyleClass().add("konto-input-field");
+        grossInterestField.getStyleClass().add("konto-input-field");
+        taxBerndField.getStyleClass().add("konto-input-field");
+       
+        
+        
+        balanceCard.getStyleClass().add("card");
+        formCard.getStyleClass().add("card");
+        tableCard.getStyleClass().add("card");
+
+        root = new VBox(16, balanceCard, formCard, tableCard);
+        root.getStyleClass().add("root-pane");
+        root.setFocusTraversable(true);
     }
-    private VBox createCard(Node... children) {
-        VBox box = new VBox(12, children);
-        box.setPadding(new Insets(15));
-        box.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-border-color: #d9dee3;" +
-            "-fx-border-radius: 10;" +
-            "-fx-background-radius: 10;"
-        );
-        return box;
+
+    private VBox createCard(Label title, Node... content) {
+        VBox card = new VBox(12);
+        card.getChildren().add(title);
+        card.getChildren().addAll(content);
+        return card;
     }
+       
+
 
     public HBox getOwnerRow() {
 		return ownerRow;
@@ -441,6 +498,9 @@ public class AccountView {
 	}
 	public Button getCancelEditButton() {
 	    return cancelEditButton;
+	}
+	public void setFormTitleText(String text) {
+	    formTitle.setText(text);
 	}
     
 }

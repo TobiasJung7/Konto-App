@@ -9,6 +9,7 @@ import Konto.Transaction;
 import Konto.TransactionManager;
 import Konto.TransactionType;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
@@ -62,7 +63,7 @@ public class AccountController {
                 loadSelectedTransactionIntoForm();
             }
         });
-
+        clearForm();
         updateFormMode();
         refreshEntriesFromManager();
         refreshBalanceLabels();
@@ -117,7 +118,6 @@ public class AccountController {
 		        } else {
 		            manager.addTransaction(tx);
 		        }
-
 		        refreshEntriesFromManager();
 		        refreshBalanceLabels();
 		        clearForm();
@@ -182,9 +182,9 @@ public class AccountController {
 		}
 		// Aktualliseren der Kontostände
 		private void refreshBalanceLabels() {
-			view.getGesamtLabel().setText("Gesamt: " + moneyUtil.formatAmount(manager.getCurrentAccountBalance()) + " €");
-			view.getTobiasLabel().setText("Tobias: " + moneyUtil.formatAmount(manager.getCurrentTobiasBalance()) + " €");
-			view.getBerndLabel().setText("Bernd: " + moneyUtil.formatAmount(manager.getCurrentBerndBalance()) + " €");
+			view.getGesamtLabel().setText( moneyUtil.formatAmount(manager.getCurrentAccountBalance()) + " €");
+			view.getTobiasLabel().setText( moneyUtil.formatAmount(manager.getCurrentTobiasBalance()) + " €");
+			view.getBerndLabel().setText( moneyUtil.formatAmount(manager.getCurrentBerndBalance()) + " €");
 		}
 		//Intelligente Oberfläche
 		private void updateFormMode() {
@@ -202,6 +202,11 @@ public class AccountController {
 		        view.getGrossInterestField().clear();
 		        view.getTaxBerndField().clear();
 		        view.getMonthBox().setValue(null);
+		        
+		        view.setFormTitleText("Buchung");
+		        view.getLabelGrossInterest().setText("Erhaltene Brutto Zinsen:");
+		        view.getLabelTaxBernd().setText("Steuern Bernd:");
+		        view.getLabelInterestMonth().setText("Monat an dem Zinsen angefallen sind:");
 
 		    } else if ("Zinsen".equals(type)) {
 		        showRow(view.getOwnerRow(), false);
@@ -210,6 +215,11 @@ public class AccountController {
 		        showRow(view.getGrossInterestRow(), true);
 		        showRow(view.getTaxBerndRow(), true);
 		        showRow(view.getInterestMonthRow(), true);
+		       
+		        view.setFormTitleText("Zinsbuchung");
+		        view.getLabelGrossInterest().setText("Bruttozinsen:");
+		        view.getLabelTaxBernd().setText("Steuer Bernd:");
+		        view.getLabelInterestMonth().setText("Zinsmonat:");
 
 		        view.getOwnerBox().setValue(null);
 		        view.getTransferBox().setValue(null);
@@ -231,12 +241,20 @@ public class AccountController {
 		        view.getGrossInterestField().clear();
 		        view.getTaxBerndField().clear();
 		        view.getMonthBox().setValue(null);
+		        view.setFormTitleText("Buchung");
+		        view.getLabelGrossInterest().setText("Erhaltene Brutto Zinsen:");
+		        view.getLabelTaxBernd().setText("Steuern Bernd:");
+		        view.getLabelInterestMonth().setText("Monat an dem Zinsen angefallen sind:");
 		    }
 		}
 			
 		private void showRow(HBox row, boolean visible) {
 		    row.setVisible(visible);
 		    row.setManaged(visible);
+		}
+		private void showButton(Button button, boolean visible) {
+			button.setVisible(visible);
+			button.setManaged(visible);
 		}
 		
 		private void clearForm() {
@@ -255,7 +273,13 @@ public class AccountController {
 			    view.getStatusLabel().setText("");
 			    view.getSubmitButton().setText("Abschicken");
 			    view.getCancelEditButton().setDisable(true);
-
+			    
+			    showButton(view.getDeleteButton(),false);
+			    showButton(view.getCancelEditButton(), false);
+			    showButton(view.getEditButton(),true);
+			    
+			    view.getEditButton().setDisable(false);
+			    
 			    editMode = false;
 			    editingManagerIndex = -1;
 
@@ -403,7 +427,10 @@ public class AccountController {
 	    }
 
 	    view.getSubmitButton().setText("Änderung speichern");
+	    showButton(view.getCancelEditButton(),true);
 	    view.getCancelEditButton().setDisable(false);
+	    showButton(view.getDeleteButton(),true);
+	    showButton(view.getEditButton(),false);
 	    view.getStatusLabel().setText("Bearbeitungsmodus aktiv");
 	}
 	private int getSelectedManagerIndex() {

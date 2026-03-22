@@ -1,5 +1,6 @@
 package de.tobias.kontoapp.ui;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import Konto.TransactionManager;
@@ -7,6 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import java.nio.file.Path;
 import java.io.IOException;
+import java.net.URL;
+
 import Konto.Transaction;
 
 import de.tobias.kontoapp.persistence.TransactionFileService;
@@ -51,9 +54,16 @@ import de.tobias.kontoapp.persistence.TransactionFileService;
 		    );
 
 		    Scene scene = new Scene(view.getRoot(), 1200, 800);
+		    URL cssUrl = AccountApp.class.getResource("account.css");
+		    if (cssUrl == null) {
+		    	throw new IllegalArgumentException("Fehler bei dem Aufruf des css Files");
+		    }else {
+		    	scene.getStylesheets().add(cssUrl.toExternalForm());
+		    }
 		    stage.setScene(scene);
 		    stage.setTitle("Konto-App");
 		    stage.show();
+		    Platform.runLater(() -> view.getRoot().requestFocus());
 		}
        
     public static void main(String[] args) {
