@@ -1,1 +1,5 @@
-/target/
+target/
+.DS_Store
+transactions.csv
+transactions Kopie.csv
+transactions Kopie Stand 18.03.2026.csv
