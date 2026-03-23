@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.net.URL;
+import javafx.scene.control.ScrollPane;
 
 
 import Konto.Transaction;
@@ -54,7 +55,12 @@ import de.tobias.kontoapp.persistence.TransactionFileService;
 		            savePath
 		    );
 
-		    Scene scene = new Scene(view.getRoot(), 1200, 800);
+		    ScrollPane scrollPane = new ScrollPane();
+		    scrollPane.setContent(view.getRoot());
+		    scrollPane.setFitToWidth(true);
+		    scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+		    Scene scene = new Scene(scrollPane, 1200, 800);
 		    URL cssUrl = AccountApp.class.getResource("account.css");
 		    if (cssUrl == null) {
 		    	throw new IllegalArgumentException("Fehler bei dem Aufruf des css Files");

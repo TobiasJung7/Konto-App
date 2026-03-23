@@ -2,6 +2,7 @@ package de.tobias.kontoapp.ui;
 
 import java.math.RoundingMode;
 import java.time.Month;
+import java.time.Year;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
@@ -94,6 +95,15 @@ public class AccountView {
     private HBox dateRow;
     
     private CheckBox balanceCheckBox;
+    
+    private ComboBox<String> personFilterBox;
+    private ComboBox<String> typFilterBox;
+    private ComboBox<String> monthFilterBox;
+    private ComboBox<String> yearFilterBox;
+    private HBox monthFilterRow;
+    private HBox personFilterRow;
+    private HBox typFilterRow;
+    private HBox yearFilterRow;
 
     
 
@@ -145,6 +155,36 @@ public class AccountView {
         entriesTable.setPrefHeight(320);
         entriesTable.setPlaceholder(new Label("Noch keine Buchungen vorhanden"));
         entriesTable.setSortPolicy(table -> false);
+        
+        personFilterBox = new ComboBox<>();
+        personFilterBox.getItems().addAll("Alle","Tobias", "Bernd", "Gemeinsam");
+        personFilterBox.setValue("Alle");
+        Label personFilterLabel = new Label("Person:");
+        personFilterRow = new HBox(20, personFilterLabel, personFilterBox);
+        
+        
+        
+        typFilterBox = new ComboBox<>();
+        typFilterBox.getItems().addAll("Alle","Einnahmen","Ausgaben", "Umbuchungen", "Zinsen" );
+        typFilterBox.setValue("Alle");
+        Label typFilterLabel = new Label("Transaktions Typ:");
+        typFilterRow = new HBox(20, typFilterLabel, typFilterBox);
+        
+        yearFilterBox = new ComboBox<>();
+        yearFilterBox.getItems().addAll("Alle Jahre", "2023", "2024","2025","2026","2027","2028","2029","2030");
+        yearFilterBox.setValue("Alle Jahre");
+        Label yearFilterLabel = new Label ("Jahr: ");
+        yearFilterRow = new HBox(20, yearFilterLabel, yearFilterBox);
+        
+        monthFilterBox = new ComboBox<>();
+        monthFilterBox.getItems().addAll("Alle Monate", "Januar", "Februar", "Mai", "Juni", "Juli","August", "September", "Oktober", "November", "Dezember");
+        monthFilterBox.setValue("Alle Monate");
+        Label monthFilterLabel = new Label("Monat: ");
+        monthFilterRow = new HBox(20, monthFilterLabel, monthFilterBox);
+        
+        HBox filterRow = new HBox(personFilterRow, typFilterRow, yearFilterRow, monthFilterRow);
+        filterRow.setSpacing(30);
+        
         
         gesamtLabel = new Label();
         tobiasLabel = new Label();
@@ -290,7 +330,7 @@ public class AccountView {
                 statusLabel,
                 buttonRow
         );
-        VBox tableCard = createCard(tableTitle, entriesTable);
+        VBox tableCard = createCard(tableTitle, filterRow, entriesTable);
 
         statusLabel.getStyleClass().add("status-label");
 
@@ -348,6 +388,18 @@ public class AccountView {
         tobiasImpactLabel.getStyleClass().add("balance-impact");
         berndImpactLabel.getStyleClass().add("balance-impact");
         
+        personFilterBox.getStyleClass().add("konto-combo-box");
+        typFilterBox.getStyleClass().add("konto-combo-box");
+        yearFilterBox.getStyleClass().add("konto-combo-box");
+        monthFilterBox.getStyleClass().add("konto-combo-box");
+        
+        personFilterRow.getStyleClass().add("input-row");
+        typFilterRow.getStyleClass().add("input-row");
+        yearFilterRow.getStyleClass().add("input-row");
+        monthFilterRow.getStyleClass().add("input-row");
+        
+        
+        
         balanceCard.getStyleClass().add("card");
         formCard.getStyleClass().add("card");
         tableCard.getStyleClass().add("card");
@@ -356,7 +408,28 @@ public class AccountView {
         root.getStyleClass().add("root-pane");
         root.setFocusTraversable(true);
     }
-    private HBox createBalanceRow(Label nameLabel, Label valueLabel, Label impactLabel) {
+    public HBox getMonthFilterRow() {
+		return monthFilterRow;
+	}
+
+	public ComboBox<String> getMonthFilterBox() {
+		return monthFilterBox;
+	}
+
+	public ComboBox<String> getYearFilterBox() {
+		return yearFilterBox;
+	}
+
+	public ComboBox<String> getPersonFilterBox() {
+		return personFilterBox;
+	}
+    
+
+	public ComboBox<String> getTypFilterBox() {
+		return typFilterBox;
+	}
+
+	private HBox createBalanceRow(Label nameLabel, Label valueLabel, Label impactLabel) {
         nameLabel.setMinWidth(80);
         valueLabel.setMinWidth(80);
 

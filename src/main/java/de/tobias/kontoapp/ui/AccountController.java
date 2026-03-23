@@ -19,7 +19,9 @@ import de.tobias.kontoapp.persistence.TransactionFileService;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+
 
 public class AccountController {
 	
@@ -56,11 +58,17 @@ public class AccountController {
         this.moneyUtil = moneyUtil;
         this.fileService = fileService;
         this.savePath = savePath;
-        
-        this.view.getBalanceCheckBox().setOnAction(e -> refreshBalanceLabels());
+        view.getYearFilterBox().valueProperty().addListener((obs, oldValue, newValue) -> {
+            updateFilterMode();
+            refreshEntriesFromManager();
+        });
+        this.view.getPersonFilterBox().valueProperty().addListener((obs, oldValue, newValue) -> refreshEntriesFromManager());
+        this.view.getYearFilterBox().valueProperty().addListener((obs, oldValue, newValue) -> refreshEntriesFromManager());
+        this.view.getMonthFilterBox().valueProperty().addListener((obs, oldValue, newValue) -> refreshEntriesFromManager());
         this.view.getBalanceCheckBox().selectedProperty().addListener((obs, oldValue, newValue) -> {
             refreshBalanceLabels();
         });
+        this.view.getTypFilterBox().valueProperty().addListener((obs, oldValue, newValue) -> refreshEntriesFromManager());
         this.view.getEntriesTable().setItems(entries);
         this.view.getSubmitButton().setOnAction(e -> handleSubmit());
         this.view.getDeleteButton().setOnAction(e -> handleDelete());
@@ -76,6 +84,7 @@ public class AccountController {
         updateFormMode();
         refreshEntriesFromManager();
         refreshBalanceLabels();
+        updateFilterMode();
     }
 		
 	
@@ -83,16 +92,134 @@ public class AccountController {
 		private void refreshEntriesFromManager() {
 			entries.clear();
 			
+			String personFilter = view.getPersonFilterBox().getValue();
+			String typFilter = view.getTypFilterBox().getValue();
+			String yearFilter = view.getYearFilterBox().getValue();
+			String monthFilter = view.getMonthFilterBox().getValue();
 			
 			for (Transaction tx : manager.getAllTransactions()) {
-			    UiEntry entry = uiEntryMapper.mapTransactionToEntry(tx);
-			    entries.add(0, entry);
-			}
-				
+				if(matchesPersonFilter(tx, personFilter) && matchesTypFilter(tx, typFilter) && matchesYearFilter(tx, yearFilter)&& matchesMonthFilter(tx, monthFilter)) {
+				 UiEntry entry = uiEntryMapper.mapTransactionToEntry(tx);
+				    entries.add(0, entry);
+				}
 			}
 			
-		
+		}
+			private boolean matchesPersonFilter(Transaction tx, String filter) {
+				if(filter == null || "Alle".equals(filter)) {
+					return true;
+				}
+				if("Gemeinsam".equals(filter)){
+					return (tx.getBerndSplit().compareTo(BigDecimal.ZERO) != 0 && tx.getTobiasSplit().compareTo(BigDecimal.ZERO) != 0);
+				}
+				if("Tobias".equals(filter)) {
+					return tx.getTobiasSplit().compareTo(BigDecimal.ZERO) != 0;
+				}
+				if("Bernd".equals(filter)) {
+					return tx.getBerndSplit().compareTo(BigDecimal.ZERO) != 0;
+				}
+				else {
+				throw new IllegalArgumentException("Unbekannter Filter");
+				}
+			}
+			private boolean matchesTypFilter(Transaction tx, String filter) {
+				if(filter == null || "Alle".equals(filter)) {
+					return true;
+				}
+				if("Einnahmen".equals(filter)) {
+					return tx.getType() == TransactionType.Deposit;
+				}
+				if("Zinsen".equals(filter)) {
+					return tx.getType() == TransactionType.Interest;
+				}
+				if("Umbuchungen".equals(filter)) {
+					return tx.getType() == TransactionType.Transfer;
+				}
+				if("Ausgaben".equals(filter)) {
+					return tx.getType() == TransactionType.Expenses;
+				}
+				else {
+				throw new IllegalArgumentException("Unbekannter Filter");
+				}
+			}
+			private boolean matchesYearFilter(Transaction tx, String yearFilter) {
+				if("Alle Jahre".equals(yearFilter)) {
+					return true;
+				}
+				if("2023".equals(yearFilter)) {
+					return Integer.toString(tx.getDate().getYear()).equals("2023");
+				}
+				if("2024".equals(yearFilter)){
+					return Integer.toString(tx.getDate().getYear()).equals("2024");
+				}
+				if("2025".equals(yearFilter)){
+					return Integer.toString(tx.getDate().getYear()).equals("2025");
+				}
+				if("2026".equals(yearFilter)){
+					return Integer.toString(tx.getDate().getYear()).equals("2026");
+				}
+				if("2027".equals(yearFilter)){
+					return Integer.toString(tx.getDate().getYear()).equals("2027");
+				}
+				if("2028".equals(yearFilter)){
+					return Integer.toString(tx.getDate().getYear()).equals("2028");
+				}
+				if("2029".equals(yearFilter)){
+					return Integer.toString(tx.getDate().getYear()).equals("2029");
+				}
+				if("2030".equals(yearFilter)){
+					return Integer.toString(tx.getDate().getYear()).equals("2030");
+				}else {
+					throw new IllegalArgumentException("unbekanntes Jahr");
+				}
+			}
+		private boolean matchesMonthFilter(Transaction tx, String monthFilter) {
+				if("Alle Monate".equals(monthFilter)) {
+					return true;
+				}
+				if("Januar".equals(monthFilter)) {
+					return "JANUARY".equals(tx.getDate().getMonth().toString());
+				}
+				if("Februar".equals(monthFilter)) {
+					return "FEBRUARY".equals(tx.getDate().getMonth().toString());
+				}
+				if("März".equals(monthFilter)) {
+					return "MARCH".equals(tx.getDate().getMonth().toString());
+				}
+				if("April".equals(monthFilter)) {
+					return "APRIL".equals(tx.getDate().getMonth().toString());
+				}
+				if("Mai".equals(monthFilter)) {
+					return "MAY".equals(tx.getDate().getMonth().toString());
+				}
+				if("Juni".equals(monthFilter)) {
+					return "JUNE".equals(tx.getDate().getMonth().toString());
+				}
+				if("Juli".equals(monthFilter)) {
+					return "JULY".equals(tx.getDate().getMonth().toString());
+				}
+				if("August".equals(monthFilter)) {
+					return "AUGUST".equals(tx.getDate().getMonth().toString());
+				}
+				if("September".equals(monthFilter)) {
+					return "SEPTEMBER".equals(tx.getDate().getMonth().toString());
+				}
+				if("Oktober".equals(monthFilter)) {
+					return "OCTOBER".equals(tx.getDate().getMonth().toString());
+				}
+				if("November".equals(monthFilter)) {
+					return "NOVEMBER".equals(tx.getDate().getMonth().toString());
+				}
+				if("Dezember".equals(monthFilter)) {
+					return "DEZEMBER".equals(tx.getDate().getMonth().toString());
+				}
+				else {
+					throw new IllegalArgumentException("unbekannter Monat");
+					
+				}
+		}
 	
+
 	//Methode für Transaktionsausgabe
 		private void handleSubmit() {
 		    String type = view.getTypBox().getValue();
@@ -167,7 +294,7 @@ public class AccountController {
 		   refreshEntriesFromManager();
 		   refreshBalanceLabels();
 		   clearForm();
-		    
+		    return;
 		}
 		
 		// Transaktion löschen
@@ -245,19 +372,17 @@ public class AccountController {
 		}
 			
 			
-		//Ausblenden von Kontolabel#
-			
-		private boolean updateBalanceLabels() {
-			if(view.getBalanceCheckBox().isSelected() == false) {
-				return false;
-			}else {
-				return true;
-			}
+		private void updateFilterMode() {
+		    String year = view.getYearFilterBox().getValue();
+
+		    boolean showMonthFilter = year != null && !"Alle Jahre".equals(year);
+		    showRow(view.getMonthFilterRow(), showMonthFilter);
 		}
+		
 		//Intelligente Oberfläche
 		private void updateFormMode() {
 		    String type = view.getTypBox().getValue();
-
+		    
 		    if ("Umbuchung".equals(type)) {
 		        showRow(view.getOwnerRow(), false);
 		        showRow(view.getTransferRow(), true);
@@ -324,6 +449,8 @@ public class AccountController {
 			button.setVisible(visible);
 			button.setManaged(visible);
 		}
+		
+		
 		
 		private void clearForm() {
 			
