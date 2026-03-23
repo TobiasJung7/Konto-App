@@ -21,6 +21,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.Node;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.control.CheckBox;
 
 public class AccountView {
 
@@ -76,6 +79,9 @@ public class AccountView {
     private Label tobias;
     private Label bernd;
     private Label gesamt;
+    private Label gesamtImpactLabel;
+    private Label tobiasImpactLabel;
+    private Label berndImpactLabel;
     
     private HBox ownerRow;
     private HBox typRow;
@@ -143,22 +149,25 @@ public class AccountView {
         gesamtLabel = new Label();
         tobiasLabel = new Label();
         berndLabel = new Label();
-        tobias = new Label("Tobias: ");
-        bernd = new Label("Bernd: ");
-        gesamt = new Label("Gesamt: ");
-        balanceCheckBox = new CheckBox("");
-        namenBalanceBox = new VBox(5, gesamt, tobias, bernd);
-        werteBalanceBox = new VBox(5, gesamtLabel, tobiasLabel, berndLabel);
-        HBox balanceValuesBox = new HBox(30, namenBalanceBox, werteBalanceBox);
-        balanceValuesBox.setAlignment(Pos.CENTER_LEFT);
-        
-        
-        HBox balanceRow = new HBox(20, balanceValuesBox, balanceCheckBox);
-        balanceRow.setAlignment(Pos.CENTER_LEFT);
-        
-        namenBalanceBox.setMinWidth(50);
-        werteBalanceBox.setMinWidth(120);
-        balanceCheckBox.setMinWidth(80);
+
+        gesamt = new Label("Gesamt:");
+        tobias = new Label("Tobias:");
+        bernd = new Label("Bernd:");
+
+        gesamtImpactLabel = new Label();
+        tobiasImpactLabel = new Label();
+        berndImpactLabel = new Label();
+
+        balanceCheckBox = new CheckBox("Kontostände ausblenden");
+        balanceCheckBox.setSelected(false);
+
+        HBox gesamtRow = createBalanceRow(gesamt, gesamtLabel, gesamtImpactLabel);
+        HBox tobiasRow = createBalanceRow(tobias, tobiasLabel, tobiasImpactLabel);
+        HBox berndRow = createBalanceRow(bernd, berndLabel, berndImpactLabel);
+
+        VBox balanceRowsBox = new VBox(8, gesamtRow, tobiasRow, berndRow);
+        VBox balanceContent = new VBox(10, balanceRowsBox, balanceCheckBox);
+        balanceContent.setAlignment(Pos.CENTER_LEFT);
         
         
         ownerLabel = new Label("Zuordnung: ");
@@ -266,7 +275,7 @@ public class AccountView {
 
         HBox buttonRow = new HBox(10, submitButton, editButton, cancelEditButton, deleteButton);
 
-        VBox balanceCard = createCard(balanceTitle, balanceRow);
+        VBox balanceCard = createCard(balanceTitle, balanceContent);
         VBox formCard = createCard(
                 formTitle,
                 typRow,
@@ -308,6 +317,10 @@ public class AccountView {
         tobias.getStyleClass().add("balance-label");
         gesamt.getStyleClass().add("balance-label");
         bernd.getStyleClass().add("balance-label");
+        gesamtImpactLabel.getStyleClass().add("balance-impact");
+        tobiasImpactLabel.getStyleClass().add("balance-impact");
+        berndImpactLabel.getStyleClass().add("balance-impact");
+
 
         typRow.getStyleClass().add("input-row");
         ownerRow.getStyleClass().add("input-row");
@@ -331,7 +344,9 @@ public class AccountView {
         grossInterestField.getStyleClass().add("konto-input-field");
         taxBerndField.getStyleClass().add("konto-input-field");
        
-        
+        gesamtImpactLabel.getStyleClass().add("balance-impact");
+        tobiasImpactLabel.getStyleClass().add("balance-impact");
+        berndImpactLabel.getStyleClass().add("balance-impact");
         
         balanceCard.getStyleClass().add("card");
         formCard.getStyleClass().add("card");
@@ -341,8 +356,28 @@ public class AccountView {
         root.getStyleClass().add("root-pane");
         root.setFocusTraversable(true);
     }
+    private HBox createBalanceRow(Label nameLabel, Label valueLabel, Label impactLabel) {
+        nameLabel.setMinWidth(80);
+        valueLabel.setMinWidth(80);
 
-    public Label getFormTitle() {
+        HBox row = new HBox(4, nameLabel, valueLabel, impactLabel);
+        row.setAlignment(Pos.CENTER_LEFT);
+        return row;
+    }
+
+    public Label getGesamtImpactLabel() {
+		return gesamtImpactLabel;
+	}
+
+	public Label getTobiasImpactLabel() {
+		return tobiasImpactLabel;
+	}
+
+	public Label getBerndImpactLabel() {
+		return berndImpactLabel;
+	}
+
+	public Label getFormTitle() {
 		return formTitle;
 	}
 

@@ -267,3 +267,15 @@
 .konto-check-box .mark {
     -fx-background-color: white;
 }
+.balance-impact {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.balance-impact-positive {
+    -fx-text-fill: #15803d;
+}
+
+.balance-impact-negative {
+    -fx-text-fill: #b91c1c;
+}

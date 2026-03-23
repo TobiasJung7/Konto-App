@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
+import java.util.List;
 
 import Konto.Transaction;
 import Konto.TransactionManager;
@@ -15,6 +16,10 @@ import javafx.scene.layout.HBox;
 import java.io.IOException;
 import java.nio.file.Path;
 import de.tobias.kontoapp.persistence.TransactionFileService;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 
 public class AccountController {
 	
@@ -53,6 +58,9 @@ public class AccountController {
         this.savePath = savePath;
         
         this.view.getBalanceCheckBox().setOnAction(e -> refreshBalanceLabels());
+        this.view.getBalanceCheckBox().selectedProperty().addListener((obs, oldValue, newValue) -> {
+            refreshBalanceLabels();
+        });
         this.view.getEntriesTable().setItems(entries);
         this.view.getSubmitButton().setOnAction(e -> handleSubmit());
         this.view.getDeleteButton().setOnAction(e -> handleDelete());
@@ -172,29 +180,68 @@ public class AccountController {
 			    }
 
 			    int managerIndex = manager.getAllTransactions().size() - 1 - selectedIndex;
+			    
+			    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+			    alert.setTitle("Löschen bestätigen");
+			    alert.setHeaderText("Buchung wirklich löschen?");
+			    alert.setContentText("Die ausgewählte Buchung wird dauerhaft entfernt.");
 
+			    var result = alert.showAndWait();
+			    if (result.isEmpty() || result.get() != ButtonType.OK) {
+			        view.getStatusLabel().setText("Löschen abgebrochen.");
+			        return;
+			    }
+			   
 			   
 			    manager.removeTransactionAt(managerIndex);
+			    
 			    saveToFile();
 			    refreshEntriesFromManager();
 			    refreshBalanceLabels();
-			    view.getStatusLabel().setText("");
-			
+			    editMode = false;
+			    editingManagerIndex = -1;
+			    clearForm();
+
+			    view.getStatusLabel().setText("Buchung wurde gelöscht.");
 		}
 		// Aktualliseren der Kontostände
 		private void refreshBalanceLabels() {
-			boolean ausblenden = updateBalanceLabels();
-			if(ausblenden) {
-				view.getGesamtLabel().setText("•••••••••••");
-				view.getTobiasLabel().setText("•••••••••••");
-				view.getBerndLabel().setText("•••••••••••");
-				view.getBalanceCheckBox().setText("Kontostände einblenden");
-			}else {
-				view.getGesamtLabel().setText( moneyUtil.formatAmount(manager.getCurrentAccountBalance()) + " €");
-				view.getTobiasLabel().setText( moneyUtil.formatAmount(manager.getCurrentTobiasBalance()) + " €");
-				view.getBerndLabel().setText( moneyUtil.formatAmount(manager.getCurrentBerndBalance()) + " €");
-				view.getBalanceCheckBox().setText("Kontostände ausblenden");
-			}
+		    boolean ausblenden = view.getBalanceCheckBox().isSelected();
+
+		    if (ausblenden) {
+		        view.getBalanceCheckBox().setText("Kontostände einblenden");
+
+		        view.getGesamtLabel().setText("••••••");
+		        view.getTobiasLabel().setText("••••••");
+		        view.getBerndLabel().setText("••••••");
+
+		        view.getGesamtImpactLabel().setText("");
+		        view.getTobiasImpactLabel().setText("");
+		        view.getBerndImpactLabel().setText("");
+		        return;
+		    }
+
+		    view.getBalanceCheckBox().setText("Kontostände ausblenden");
+
+		    view.getGesamtLabel().setText(moneyUtil.formatAmount(manager.getCurrentAccountBalance()));
+		    view.getTobiasLabel().setText(moneyUtil.formatAmount(manager.getCurrentTobiasBalance()));
+		    view.getBerndLabel().setText(moneyUtil.formatAmount(manager.getCurrentBerndBalance()));
+
+		    BigDecimal gesamtImpact = BigDecimal.ZERO;
+		    BigDecimal tobiasImpact = BigDecimal.ZERO;
+		    BigDecimal berndImpact = BigDecimal.ZERO;
+
+		    List<Transaction> transactions = manager.getAllTransactions();
+		    if (!transactions.isEmpty()) {
+		        Transaction last = transactions.get(transactions.size() - 1);
+		        gesamtImpact = last.getAccountEffekt();
+		        tobiasImpact = last.getTobiasSplit();
+		        berndImpact = last.getBerndSplit();
+		    }
+
+		    updateImpactLabel(view.getGesamtImpactLabel(), gesamtImpact);
+		    updateImpactLabel(view.getTobiasImpactLabel(), tobiasImpact);
+		    updateImpactLabel(view.getBerndImpactLabel(), berndImpact);
 		}
 			
 			
@@ -471,6 +518,16 @@ public class AccountController {
 	        view.getStatusLabel().setText("Fehler beim Speichern der Datei");
 	        e.printStackTrace();
 	    }
+	}
+	private void updateImpactLabel(Label label, BigDecimal amount) {
+	    boolean positiveOrZero = amount.compareTo(BigDecimal.ZERO) >= 0;
+	    String arrow = positiveOrZero ? "▲ " : "▼ ";
+	    String sign = positiveOrZero ? "+" : "";
+
+	    label.setText(arrow + sign + moneyUtil.formatAmount(amount));
+
+	    label.getStyleClass().removeAll("balance-impact-positive", "balance-impact-negative");
+	    label.getStyleClass().add(positiveOrZero ? "balance-impact-positive" : "balance-impact-negative");
 	}
 	
 	
