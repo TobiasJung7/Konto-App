@@ -702,12 +702,24 @@ public class AccountController {
 		    view.getGrossInterestField().clear();
 		    view.getTaxBerndField().clear();
 
+		    view.getEnteredByBox().getSelectionModel().clearSelection();
 		    view.getEnteredByBox().setValue(null);
+
+		    view.getTypBox().getSelectionModel().clearSelection();
 		    view.getTypBox().setValue(null);
+
+		    view.getOwnerBox().getSelectionModel().clearSelection();
 		    view.getOwnerBox().setValue(null);
+
+		    view.getTransferBox().getSelectionModel().clearSelection();
 		    view.getTransferBox().setValue(null);
-		    view.getDatumPicker().setValue(null);
+
+		    view.getMonthBox().getSelectionModel().clearSelection();
 		    view.getMonthBox().setValue(null);
+
+		    view.getStatusLabel().setText("");
+		    view.getSubmitButton().setText("Abschicken");
+		    view.getCancelEditButton().setDisable(true);
 
 		    view.getStatusLabel().setText("");
 		    view.getSubmitButton().setText("Abschicken");
@@ -723,7 +735,7 @@ public class AccountController {
 		    editingManagerIndex = -1;
 
 		    updateFormMode();
-		    view.getBeschreibung().requestFocus();
+		   
 	}
 
 		public TransactionManager getManager() {

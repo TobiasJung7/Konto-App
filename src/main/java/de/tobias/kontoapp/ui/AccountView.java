@@ -16,6 +16,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -321,6 +322,13 @@ public class AccountView {
         
         clearButton = new Button("Formular leeren");
         clearButton.setDisable(false);
+        
+        setupPlaceholderComboBox(typBox, "Bitte wählen");
+        setupPlaceholderComboBox(ownerBox, "Bitte wählen");
+        setupPlaceholderComboBox(transferBox, "Bitte wählen");
+        setupPlaceholderComboBox(enteredByBox, "Bitte wählen");
+        setupPlaceholderComboBox(monthBox, "Bitte wählen");
+        
 
         enteredByRow = new HBox(15, enteredByLabel, enteredByBox);
         typRow = new HBox(15, labelTyp, typBox);
@@ -493,6 +501,24 @@ public class AccountView {
         root.getStyleClass().add("root-pane");
         root.setFocusTraversable(true);
     }
+    
+    private <T> void setupPlaceholderComboBox(ComboBox<T> box, String placeholder) {
+        box.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(placeholder);
+                    setStyle("-fx-text-fill: #888888;");
+                } else {
+                    setText(String.valueOf(item));
+                    setStyle("");
+                }
+            }
+        });
+    }
+    
     public Button getClearButton() {
 		return clearButton;
 	}
