@@ -1,4 +1,4 @@
-package de.tobias.kontoapp.ui;
+package de.tobias.kontoapp.application;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

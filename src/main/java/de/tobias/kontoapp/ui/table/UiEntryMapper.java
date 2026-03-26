@@ -1,10 +1,10 @@
-package de.tobias.kontoapp.ui;
+package de.tobias.kontoapp.ui.table;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import Konto.Transaction;
 import Konto.TransactionType;
+import de.tobias.kontoapp.util.MoneyUtil;
+
 
 public class UiEntryMapper {
 	
@@ -17,6 +17,7 @@ public class UiEntryMapper {
     	this.transferBerndTobias = transferBerndTobias;
     	this.transferTobiasBernd = transferTobiasBernd;
     }
+  
 	
 	
 	public String mapTransactionOwner(Transaction tx) {
@@ -58,7 +59,7 @@ public class UiEntryMapper {
 	//Uientry aus Transaction bauen
 	
 	public UiEntry mapTransactionToEntry(Transaction tx) {
-		return new UiEntry(mapTransactionOwner(tx), mapTransactionType(tx), tx.getDescription(),tx.getAccountEffekt().abs(),tx.getDate(), mapTransactionDetails(tx));
+		return new UiEntry(mapTransactionOwner(tx), mapTransactionType(tx), tx.getDescription(),tx.getAccountEffekt().abs(),tx.getDate(), mapTransactionDetails(tx),false);
 	}
 	
 	private String mapTransactionDetails(Transaction tx) {

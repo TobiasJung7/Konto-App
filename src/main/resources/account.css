@@ -1,3 +1,71 @@
+.entries-table {
+    -fx-background-color: white;
+    -fx-border-color: #c6cfde;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 4;
+}
+
+.entries-table .column-header-background {
+    -fx-background-color: #dde0e8;
+    -fx-background-radius: 12 12 0 0;
+    -fx-border-color: transparent transparent #b3bccb transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+.entries-table .filler {
+    -fx-background-color: #f7f8fc
+}
+
+.entries-table .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 7 6 7 6;
+	-fx-border-color: transparent #b9c4d6 transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.entries-table .column-header .label {
+    -fx-text-fill: #2f3642;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10 8 10 8;
+}
+
+.entries-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #edf1f5 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 32px;
+}
+
+.entries-table .table-row-cell:hover {
+    -fx-background-color: #f1edfb;;
+}
+
+.entries-table .table-row-cell:selected {
+    -fx-background-color: #dcd6f7;
+}
+
+.entries-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #1f2a44;
+}
+
+.entries-table .table-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 10 0 10;
+    -fx-font-size: 13px;
+    -fx-text-fill: #24324a;
+    -fx-border-color: transparent #eef1f6 transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.entries-table:focused {
+    -fx-border-color: #cfd8e3;
+}
+
+
+
 .root-pane {
     -fx-background-color: #ece6f7;
     -fx-padding: 20;
@@ -278,4 +346,14 @@
 
 .balance-impact-negative {
     -fx-text-fill: #b91c1c;
+}
+.entries-table .table-row-cell.month-summary-row {
+    -fx-background-color: #f3f4f6;
+    -fx-border-color: #4b5563 transparent #4b5563 transparent;
+    -fx-border-width: 2 0 2 0;
+}
+
+.entries-table .table-row-cell.month-summary-row .table-cell {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2f3642;
 }

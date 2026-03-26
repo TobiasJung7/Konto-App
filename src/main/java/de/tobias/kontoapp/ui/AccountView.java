@@ -3,7 +3,12 @@ package de.tobias.kontoapp.ui;
 import java.math.RoundingMode;
 import java.time.Month;
 import java.time.Year;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
+import de.tobias.kontoapp.ui.table.UiEntry;
+import de.tobias.kontoapp.util.MoneyUtil;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -12,7 +17,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -25,6 +32,8 @@ import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.control.CheckBox;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class AccountView {
 
@@ -110,20 +119,30 @@ public class AccountView {
     public AccountView() {
         buildUi();
     }
+    
+    private static final DateTimeFormatter GERMAN_DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMAN);
 
     private void buildUi() {
     	MoneyUtil moneyUtil = new MoneyUtil();
         entriesTable = new TableView<>();
 
         TableColumn<UiEntry, String> dateCol = new TableColumn<>("Datum");
-        dateCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getDate().toString()));
+        
+        dateCol.setCellValueFactory(cellData -> {
+        	if (cellData.getValue().getDate() == null) {
+        		return new SimpleStringProperty("");
+        	}
+        	return new SimpleStringProperty(
+        			cellData.getValue().getDate().format(GERMAN_DATE_FORMATTER)
+               );
+        });
         dateCol.setPrefWidth(110);
         dateCol.setSortable(false);
 
         TableColumn<UiEntry, String> typeCol = new TableColumn<>("Typ");
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        typeCol.setPrefWidth(110);
+        typeCol.setPrefWidth(130);
         typeCol.setSortable(false);
 
         TableColumn<UiEntry, String> amountCol = new TableColumn<>("Betrag");
@@ -132,27 +151,55 @@ public class AccountView {
                    moneyUtil.formatAmount(cellData.getValue().getAmount())
                 )
         );
-        amountCol.setPrefWidth(100);
+        amountCol.setPrefWidth(130);
         amountCol.setSortable(false);
 
         TableColumn<UiEntry, String> ownerCol = new TableColumn<>("Aufteilung");
         ownerCol.setCellValueFactory(new PropertyValueFactory<>("owner"));
-        ownerCol.setPrefWidth(150);
+        ownerCol.setPrefWidth(130);
         ownerCol.setSortable(false);
 
         TableColumn<UiEntry, String> detailsCol = new TableColumn<>("Details");
         detailsCol.setCellValueFactory(new PropertyValueFactory<>("details"));
-        detailsCol.setPrefWidth(420);
         detailsCol.setSortable(false);
+        
+        
+        detailsCol.setCellFactory(col -> {
+            TableCell<UiEntry, String> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item);
+                }
+            };
+            cell.setWrapText(true);
+            return cell;
+        });
 
         TableColumn<UiEntry, String> descriptionCol = new TableColumn<>("Beschreibung");
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        descriptionCol.setPrefWidth(220);
         descriptionCol.setSortable(false);
+        
+        double fixedWidth = 110 + 130 + 130 + 130;
+
+        detailsCol.prefWidthProperty().bind(
+            Bindings.createDoubleBinding(
+                () -> Math.max(180, (entriesTable.getWidth() - fixedWidth )/ 2),
+                entriesTable.widthProperty()
+            )
+        );
+
+        descriptionCol.prefWidthProperty().bind(
+            Bindings.createDoubleBinding(
+                () -> Math.max(180, (entriesTable.getWidth() - fixedWidth - 40) / 2),
+                entriesTable.widthProperty()
+            )
+        );
+        
 
         entriesTable.getColumns().addAll(dateCol, typeCol, amountCol, ownerCol, detailsCol, descriptionCol);
-        entriesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        entriesTable.setPrefHeight(320);
+        entriesTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        entriesTable.setPrefHeight(340);
         entriesTable.setPlaceholder(new Label("Noch keine Buchungen vorhanden"));
         entriesTable.setSortPolicy(table -> false);
         
@@ -177,7 +224,7 @@ public class AccountView {
         yearFilterRow = new HBox(20, yearFilterLabel, yearFilterBox);
         
         monthFilterBox = new ComboBox<>();
-        monthFilterBox.getItems().addAll("Alle Monate", "Januar", "Februar", "Mai", "Juni", "Juli","August", "September", "Oktober", "November", "Dezember");
+        monthFilterBox.getItems().addAll("Alle Monate", "Januar", "Februar","März","April", "Mai", "Juni", "Juli","August", "September", "Oktober", "November", "Dezember");
         monthFilterBox.setValue("Alle Monate");
         Label monthFilterLabel = new Label("Monat: ");
         monthFilterRow = new HBox(20, monthFilterLabel, monthFilterBox);
@@ -331,6 +378,8 @@ public class AccountView {
                 buttonRow
         );
         VBox tableCard = createCard(tableTitle, filterRow, entriesTable);
+        
+        entriesTable.getStyleClass().add("entries-table");
 
         statusLabel.getStyleClass().add("status-label");
 
@@ -397,6 +446,24 @@ public class AccountView {
         typFilterRow.getStyleClass().add("input-row");
         yearFilterRow.getStyleClass().add("input-row");
         monthFilterRow.getStyleClass().add("input-row");
+        
+        entriesTable.setRowFactory(tv -> new TableRow<>() {
+            @Override
+            protected void updateItem(UiEntry item, boolean empty) {
+                super.updateItem(item, empty);
+
+                getStyleClass().remove("month-summary-row");
+
+                if (empty || item == null) {
+                    setPrefHeight(32);
+                } else if (item.isMonthSummary()) {
+                    getStyleClass().add("month-summary-row");
+                    setPrefHeight(56);
+                } else {
+                    setPrefHeight(32);
+                }
+            }
+        });
         
         
         

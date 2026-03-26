@@ -11,10 +11,14 @@ import java.io.IOException;
 import java.net.URL;
 import javafx.scene.control.ScrollPane;
 
-
 import Konto.Transaction;
-
+import de.tobias.kontoapp.application.InterestTransactionBuilder;
+import de.tobias.kontoapp.application.TransactionBuilder;
 import de.tobias.kontoapp.persistence.TransactionFileService;
+import de.tobias.kontoapp.ui.controller.AccountController;
+import de.tobias.kontoapp.ui.table.UiEntry;
+import de.tobias.kontoapp.ui.table.UiEntryMapper;
+import de.tobias.kontoapp.util.MoneyUtil;
     
 	public class AccountApp extends Application{
 	
@@ -43,16 +47,14 @@ import de.tobias.kontoapp.persistence.TransactionFileService;
 		        e.printStackTrace();
 		    }
 
-		    new AccountController(
+		  new AccountController(
 		            view,
 		            entries,
 		            manager,
 		            transactionBuilder,
 		            interestTransactionBuilder,
 		            uiEntryMapper,
-		            moneyUtil,
-		            fileService,
-		            savePath
+		            moneyUtil
 		    );
 
 		    ScrollPane scrollPane = new ScrollPane();
@@ -61,7 +63,7 @@ import de.tobias.kontoapp.persistence.TransactionFileService;
 		    scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
 		    Scene scene = new Scene(scrollPane, 1200, 800);
-		    URL cssUrl = AccountApp.class.getResource("account.css");
+		    URL cssUrl = AccountApp.class.getResource("/account.css");
 		    if (cssUrl == null) {
 		    	throw new IllegalArgumentException("Fehler bei dem Aufruf des css Files");
 		    }else {

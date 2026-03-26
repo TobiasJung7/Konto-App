@@ -1,4 +1,4 @@
-package de.tobias.kontoapp.ui;
+package de.tobias.kontoapp.util;
 
 import java.math.BigDecimal;
 
@@ -22,7 +22,7 @@ public class MoneyUtil {
 		//Formatieren von BigDecimal
 		public String formatAmount(BigDecimal amount) {
 			if(amount == null) {
-				return "0,00";
+				return "";
 			}
 			NumberFormat formatter = NumberFormat.getNumberInstance(Locale.GERMANY);
 			formatter.setMinimumFractionDigits(2);
