@@ -701,6 +701,7 @@ public class AccountController {
 		    view.getBetrag().clear();
 		    view.getGrossInterestField().clear();
 		    view.getTaxBerndField().clear();
+		    view.getDatumPicker().setValue(null);
 
 		    view.getEnteredByBox().getSelectionModel().clearSelection();
 		    view.getEnteredByBox().setValue(null);
