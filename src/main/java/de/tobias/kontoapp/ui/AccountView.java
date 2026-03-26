@@ -57,6 +57,7 @@ public class AccountView {
     private Button deleteButton;
     private Button editButton;
     private Button cancelEditButton;
+    private Button clearButton;
 
     private ComboBox<String> typBox;
     private Label labelTyp;
@@ -66,6 +67,9 @@ public class AccountView {
 
     private ComboBox<String> transferBox;
     private Label transferLabel;
+    
+    private ComboBox<String> enteredByBox;
+    private Label enteredByLabel;
 
     private Label labelDatum;
     private DatePicker datumPicker;
@@ -102,6 +106,7 @@ public class AccountView {
     private HBox descriptionRow;
     private HBox amountRow;
     private HBox dateRow;
+    private HBox enteredByRow;
     
     private CheckBox balanceCheckBox;
     
@@ -208,9 +213,7 @@ public class AccountView {
         personFilterBox.setValue("Alle");
         Label personFilterLabel = new Label("Person:");
         personFilterRow = new HBox(20, personFilterLabel, personFilterBox);
-        
-        
-        
+ 
         typFilterBox = new ComboBox<>();
         typFilterBox.getItems().addAll("Alle","Einnahmen","Ausgaben", "Umbuchungen", "Zinsen" );
         typFilterBox.setValue("Alle");
@@ -256,6 +259,10 @@ public class AccountView {
         VBox balanceContent = new VBox(10, balanceRowsBox, balanceCheckBox);
         balanceContent.setAlignment(Pos.CENTER_LEFT);
         
+        enteredByBox = new ComboBox<>();
+        enteredByLabel = new Label("Eingetragen von: ");
+        enteredByBox.setPromptText("Bitte wählen");
+        enteredByBox.getItems().addAll("Tobias", "Bernd", "Anderer");
         
         ownerLabel = new Label("Zuordnung: ");
         ownerBox = new ComboBox<>();
@@ -311,7 +318,11 @@ public class AccountView {
         editButton = new Button("Ausgewählte Buchung bearbeiten");
         cancelEditButton = new Button("Bearbeiten abbrechen");
         cancelEditButton.setDisable(true);
+        
+        clearButton = new Button("Formular leeren");
+        clearButton.setDisable(false);
 
+        enteredByRow = new HBox(15, enteredByLabel, enteredByBox);
         typRow = new HBox(15, labelTyp, typBox);
         ownerRow = new HBox(15, ownerLabel, ownerBox);
         transferRow = new HBox(15, transferLabel, transferBox);
@@ -322,6 +333,7 @@ public class AccountView {
         amountRow = new HBox(15, labelBetrag, betrag);
         dateRow = new HBox(15, labelDatum, datumPicker);
 
+        enteredByLabel.setMinWidth(150);
         labelTyp.setMinWidth(150);
         ownerLabel.setMinWidth(150);
         transferLabel.setMinWidth(150);
@@ -337,6 +349,7 @@ public class AccountView {
         double monthYearGap = 8;
         double descriptionWidth = selectionFieldWidth + monthYearGap + yearSpinnerWidth;
 
+        enteredByBox.setMinWidth(selectionFieldWidth);
         typBox.setPrefWidth(selectionFieldWidth);
         ownerBox.setPrefWidth(selectionFieldWidth);
         transferBox.setPrefWidth(selectionFieldWidth);
@@ -360,11 +373,13 @@ public class AccountView {
         formTitle = new Label("Buchung");
         Label tableTitle = new Label("Buchungen");
 
-        HBox buttonRow = new HBox(10, submitButton, editButton, cancelEditButton, deleteButton);
+        HBox buttonRow = new HBox(10, submitButton, editButton, cancelEditButton, clearButton, deleteButton);
 
         VBox balanceCard = createCard(balanceTitle, balanceContent);
         VBox formCard = createCard(
+        		
                 formTitle,
+                enteredByRow,
                 typRow,
                 ownerRow,
                 transferRow,
@@ -393,6 +408,7 @@ public class AccountView {
         editButton.getStyleClass().add("secondary-button");
         cancelEditButton.getStyleClass().add("secondary-button");
         deleteButton.getStyleClass().add("danger-button");
+        clearButton.getStyleClass().add("secondary-button");
 
         buttonRow.getStyleClass().add("button-row");
         
@@ -420,11 +436,13 @@ public class AccountView {
         descriptionRow.getStyleClass().add("input-row");
         amountRow.getStyleClass().add("input-row");
         dateRow.getStyleClass().add("input-row");
+        enteredByRow.getStyleClass().add("input-row");
         
         typBox.getStyleClass().add("konto-combo-box");
         ownerBox.getStyleClass().add("konto-combo-box");
         monthBox.getStyleClass().add("konto-combo-box");
         transferBox.getStyleClass().add("konto-combo-box");
+        enteredByBox.getStyleClass().add("konto-combo-box");
        
         yearSpinner.getStyleClass().add("konto-spinner");
   
@@ -475,7 +493,31 @@ public class AccountView {
         root.getStyleClass().add("root-pane");
         root.setFocusTraversable(true);
     }
-    public HBox getMonthFilterRow() {
+    public Button getClearButton() {
+		return clearButton;
+	}
+	public void setClearButton(Button clearButton) {
+		this.clearButton = clearButton;
+	}
+	public ComboBox<String> getEnteredByBox() {
+		return enteredByBox;
+	}
+	public Label getEnteredByLabel() {
+		return enteredByLabel;
+	}
+	public HBox getEnteredByRow() {
+		return enteredByRow;
+	}
+	public HBox getPersonFilterRow() {
+		return personFilterRow;
+	}
+	public HBox getTypFilterRow() {
+		return typFilterRow;
+	}
+	public HBox getYearFilterRow() {
+		return yearFilterRow;
+	}
+	public HBox getMonthFilterRow() {
 		return monthFilterRow;
 	}
 

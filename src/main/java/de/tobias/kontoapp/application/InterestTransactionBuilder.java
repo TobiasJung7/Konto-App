@@ -25,7 +25,8 @@ public class InterestTransactionBuilder {
             LocalDate bookingDate,
             String description,
             BigDecimal grossInterestRate,
-            BigDecimal taxBernd
+            BigDecimal taxBernd,
+            String enteredBy
     ) {
         LocalDate start = LocalDate.of(year, month, 1);
         LocalDate end = YearMonth.of(year, month).atEndOfMonth();
@@ -36,7 +37,8 @@ public class InterestTransactionBuilder {
                 bookingDate,
                 description,
                 grossInterestRate,
-                taxBernd
+                taxBernd,
+                enteredBy
         );
     }
 }

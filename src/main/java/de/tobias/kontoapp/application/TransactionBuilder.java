@@ -62,18 +62,18 @@ public class TransactionBuilder {
 		}
 	}
 	
-	public Transaction buildTransaction(String uiType, String owner, String transferDirection, String description, LocalDate date, BigDecimal amount) {
+	public Transaction buildTransaction(String uiType, String owner, String transferDirection, String description, LocalDate date, BigDecimal amount,String enteredBy) {
 		TransactionType backendType = mapUiType(uiType);
 		
 		if (backendType == TransactionType.Transfer) {
 			Split split = buildTransferSplit(transferDirection, amount);
-			return new Transaction(date, backendType, description, BigDecimal.ZERO, split);
+			return new Transaction(date, backendType, description, BigDecimal.ZERO, split, enteredBy);
 		}
 		
 		BigDecimal signedAmount = toSignedAmount(backendType, amount);
 		Split split = buildSplit(owner, signedAmount);
 		
-		return new Transaction(date, backendType, description, signedAmount, split);
+		return new Transaction(date, backendType, description, signedAmount, split, enteredBy);
 	}
 
 }

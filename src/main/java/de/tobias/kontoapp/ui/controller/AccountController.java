@@ -86,6 +86,7 @@ public class AccountController {
 	        this.view.getEditButton().setOnAction(e -> loadSelectedTransactionIntoForm());
 	        this.view.getEntriesTable().setOnMouseClicked(e -> {
 	            if (e.getClickCount() == 2) {loadSelectedTransactionIntoForm();}});
+	        this.view.getClearButton().setOnAction(e -> clearForm());
 	}
 	
 	
@@ -114,7 +115,8 @@ public class AccountController {
 		                    view.getDatumPicker().getValue(),
 		                    view.getBeschreibung().getText(),
 		                    grossInterest,
-		                    taxBernd
+		                    taxBernd,
+		                    view.getEnteredByBox().getValue()
 		            );
 		        } catch (IllegalArgumentException ex) {
 		            view.getStatusLabel().setText(ex.getMessage());
@@ -147,7 +149,8 @@ public class AccountController {
 		                view.getTransferBox().getValue(),
 		                view.getBeschreibung().getText(),
 		                view.getDatumPicker().getValue(),
-		                amount
+		                amount,
+		                view.getEnteredByBox().getValue()
 		        );
 		    } catch (IllegalArgumentException ex) {
 		        view.getStatusLabel().setText(ex.getMessage());
@@ -183,7 +186,7 @@ public class AccountController {
 				
 				
 		private String validateInterestInput() {
-			if(view.getBeschreibung().getText().isBlank() || view.getDatumPicker().getValue() == null || view.getGrossInterestField().getText().isBlank() || view.getMonthBox().getValue() == null || view.getYearSpinner().getValue() == null) {
+			if(view.getBeschreibung().getText().isBlank() || view.getDatumPicker().getValue() == null || view.getGrossInterestField().getText().isBlank() || view.getMonthBox().getValue() == null || view.getYearSpinner().getValue() == null || view.getEnteredByBox().getValue() == null) {
 				return "Bitte alle Zinsfelder ausfüllen";
 			}
 			
@@ -215,9 +218,11 @@ public class AccountController {
 		    if (view.getBeschreibung().getText().isBlank()
 		            || view.getTypBox().getValue() == null
 		            || view.getDatumPicker().getValue() == null
-		            || view.getBetrag().getText().isBlank()) {
-		        return "Bitte alle Pflichtfelder ausfüllen";
-		    }
+		            || view.getBetrag().getText().isBlank()
+		    		|| view.getEnteredByBox().getValue() == null)
+		        
+		    		return "Bitte alle Pflichtfelder ausfüllen";
+		    
 
 		    if ("Umbuchung".equals(view.getTypBox().getValue()) && view.getTransferBox().getValue() == null) {
 		        return "Bitte Umbuchungsrichtung wählen";
@@ -692,12 +697,12 @@ public class AccountController {
 		    }
 		}
 		private void clearForm() {
-			
 		    view.getBeschreibung().clear();
 		    view.getBetrag().clear();
 		    view.getGrossInterestField().clear();
 		    view.getTaxBerndField().clear();
 
+		    view.getEnteredByBox().setValue(null);
 		    view.getTypBox().setValue(null);
 		    view.getOwnerBox().setValue(null);
 		    view.getTransferBox().setValue(null);

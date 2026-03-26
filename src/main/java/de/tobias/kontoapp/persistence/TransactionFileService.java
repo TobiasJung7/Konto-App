@@ -63,6 +63,7 @@ public class TransactionFileService {
         LocalDate date = LocalDate.parse(parts[0]);
         TransactionType type = TransactionType.valueOf(parts[1]);
         String description = parts[2];
+        String enteredBy = parts[2];
         BigDecimal accountEffect = new BigDecimal(parts[3]);
         BigDecimal grossInterestRate = new BigDecimal(parts[4]);
         BigDecimal taxBernd = new BigDecimal(parts[5]);
@@ -78,7 +79,9 @@ public class TransactionFileService {
                 accountEffect,
                 grossInterestRate,
                 taxBernd,
-                split
+                split,
+                enteredBy
+                
         );
     }
 
