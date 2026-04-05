@@ -24,9 +24,11 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.Node;
@@ -150,6 +152,25 @@ public class AccountView {
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
         typeCol.setPrefWidth(130);
         typeCol.setSortable(false);
+        typeCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                UiEntry entry = getTableRow() == null ? null : getTableRow().getItem();
+
+                if (empty || entry == null) {
+                    setText(null);
+                    return;
+                }
+
+                if (entry.isMonthSummary()) {
+                    setText(null);
+                } else {
+                    setText(item);
+                }
+            }
+        });
 
         TableColumn<UiEntry, String> amountCol = new TableColumn<>("Betrag");
         amountCol.setCellValueFactory(cellData ->
@@ -159,32 +180,108 @@ public class AccountView {
         );
         amountCol.setPrefWidth(130);
         amountCol.setSortable(false);
+        amountCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                UiEntry entry = getTableRow() == null ? null : getTableRow().getItem();
+
+                if (empty || entry == null) {
+                    setText(null);
+                    return;
+                }
+
+                if (entry.isMonthSummary()) {
+                    setText(null);
+                } else {
+                    setText(item);
+                }
+            }
+        });
 
         TableColumn<UiEntry, String> ownerCol = new TableColumn<>("Aufteilung");
         ownerCol.setCellValueFactory(new PropertyValueFactory<>("owner"));
         ownerCol.setPrefWidth(130);
         ownerCol.setSortable(false);
+        ownerCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                UiEntry entry = getTableRow() == null ? null : getTableRow().getItem();
+
+                if (empty || entry == null) {
+                    setText(null);
+                    return;
+                }
+
+                if (entry.isMonthSummary()) {
+                    setText(null);
+                } else {
+                    setText(item);
+                }
+            }
+        });
 
         TableColumn<UiEntry, String> detailsCol = new TableColumn<>("Details");
         detailsCol.setCellValueFactory(new PropertyValueFactory<>("details"));
         detailsCol.setSortable(false);
-        
         
         detailsCol.setCellFactory(col -> {
             TableCell<UiEntry, String> cell = new TableCell<>() {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty || item == null ? null : item);
+
+                    UiEntry entry = getTableRow() == null ? null : getTableRow().getItem();
+
+                    if (empty || entry == null) {
+                        setText(null);
+                        setGraphic(null);
+                        return;
+                    }
+
+                    if (entry.isMonthSummary()) {
+                        setText(null);
+                        setGraphic(createMonthSummaryTitle(entry));
+                    } else {
+                        setGraphic(null);
+                        setText(item);
+                    }
                 }
             };
             cell.setWrapText(true);
             return cell;
         });
+        
 
         TableColumn<UiEntry, String> descriptionCol = new TableColumn<>("Beschreibung");
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         descriptionCol.setSortable(false);
+        
+        descriptionCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                UiEntry entry = getTableRow() == null ? null : getTableRow().getItem();
+
+                if (empty || entry == null) {
+                    setText(null);
+                    setGraphic(null);
+                    return;
+                }
+
+                if (entry.isMonthSummary()) {
+                    setText(null);
+                    setGraphic(createMonthSummaryGrid(entry));
+                } else {
+                    setGraphic(null);
+                    setText(item);
+                }
+            }
+        });
         
         double fixedWidth = 110 + 130 + 130 + 130;
 
@@ -472,7 +569,7 @@ public class AccountView {
         typFilterRow.getStyleClass().add("input-row");
         yearFilterRow.getStyleClass().add("input-row");
         monthFilterRow.getStyleClass().add("input-row");
-        
+    
         entriesTable.setRowFactory(tv -> new TableRow<>() {
             @Override
             protected void updateItem(UiEntry item, boolean empty) {
@@ -482,14 +579,18 @@ public class AccountView {
 
                 if (empty || item == null) {
                     setPrefHeight(32);
-                } else if (item.isMonthSummary()) {
+                    return;
+                }
+
+                if (item.isMonthSummary()) {
                     getStyleClass().add("month-summary-row");
-                    setPrefHeight(56);
+                    setPrefHeight(78);
                 } else {
                     setPrefHeight(32);
                 }
             }
         });
+    
         
         
         
@@ -517,6 +618,14 @@ public class AccountView {
                 }
             }
         });
+    }
+    private HBox createBalanceRow(Label nameLabel, Label valueLabel, Label impactLabel) {
+        nameLabel.setMinWidth(80);
+        valueLabel.setMinWidth(80);
+
+        HBox row = new HBox(4, nameLabel, valueLabel, impactLabel);
+        row.setAlignment(Pos.CENTER_LEFT);
+        return row;
     }
     
     public Button getClearButton() {
@@ -564,14 +673,7 @@ public class AccountView {
 		return typFilterBox;
 	}
 
-	private HBox createBalanceRow(Label nameLabel, Label valueLabel, Label impactLabel) {
-        nameLabel.setMinWidth(80);
-        valueLabel.setMinWidth(80);
-
-        HBox row = new HBox(4, nameLabel, valueLabel, impactLabel);
-        row.setAlignment(Pos.CENTER_LEFT);
-        return row;
-    }
+	
 
     public Label getGesamtImpactLabel() {
 		return gesamtImpactLabel;
@@ -623,9 +725,52 @@ public class AccountView {
         card.getChildren().addAll(content);
         return card;
     }
-       
+	private StackPane createMonthSummaryTitle(UiEntry entry) {
+	    Label title = new Label(entry.getSummaryTitle());
+	    title.getStyleClass().add("month-summary-title");
 
+	    StackPane wrapper = new StackPane(title);
+	    wrapper.setMaxWidth(Double.MAX_VALUE);
+	    wrapper.setAlignment(Pos.CENTER_LEFT);
 
+	    return wrapper;
+	}
+	private GridPane createMonthSummaryGrid(UiEntry entry) {
+	    GridPane grid = new GridPane();
+	    grid.getStyleClass().add("month-summary-grid");
+	    grid.setHgap(18);
+	    grid.setVgap(8);
+	    grid.setAlignment(Pos.CENTER_LEFT);
+
+	    Label gesamtLabel = new Label("Gesamt:");
+	    Label tobiasLabel = new Label("Tobias:");
+	    Label berndLabel = new Label("Bernd:");
+
+	    Label gesamtValue = new Label(entry.getSummaryTotalText());
+	    Label tobiasValue = new Label(entry.getSummaryTobiasText());
+	    Label berndValue = new Label(entry.getSummaryBerndText());
+
+	    gesamtLabel.getStyleClass().add("month-summary-key");
+	    tobiasLabel.getStyleClass().add("month-summary-key");
+	    berndLabel.getStyleClass().add("month-summary-key");
+
+	    gesamtValue.getStyleClass().add("month-summary-value");
+	    tobiasValue.getStyleClass().add("month-summary-value");
+	    berndValue.getStyleClass().add("month-summary-value");
+
+	    grid.add(gesamtLabel, 0, 0);
+	    grid.add(gesamtValue, 1, 0);
+
+	    grid.add(tobiasLabel, 0, 1);
+	    grid.add(tobiasValue, 1, 1);
+
+	    grid.add(berndLabel, 0, 2);
+	    grid.add(berndValue, 1, 2);
+
+	    return grid;
+	}
+	
+	
     public HBox getOwnerRow() {
 		return ownerRow;
 	}

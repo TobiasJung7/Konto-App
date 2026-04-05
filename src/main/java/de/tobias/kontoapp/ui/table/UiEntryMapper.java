@@ -58,8 +58,17 @@ public class UiEntryMapper {
 	}
 	//Uientry aus Transaction bauen
 	
-	public UiEntry mapTransactionToEntry(Transaction tx) {
-		return new UiEntry(mapTransactionOwner(tx), mapTransactionType(tx), tx.getDescription(),tx.getAccountEffekt().abs(),tx.getDate(), mapTransactionDetails(tx),false);
+	public UiEntry mapTransactionToEntry(Transaction tx, int managerIndex) {
+	    return new UiEntry(
+	        mapTransactionOwner(tx),
+	        mapTransactionType(tx),
+	        tx.getDescription(),
+	        tx.getAccountEffekt().abs(),
+	        tx.getDate(),
+	        mapTransactionDetails(tx),
+	        false,
+	        managerIndex
+	    );
 	}
 	
 	private String mapTransactionDetails(Transaction tx) {

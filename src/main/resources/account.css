@@ -357,3 +357,30 @@
     -fx-font-weight: bold;
     -fx-text-fill: #2f3642;
 }
+.table-row-cell.month-summary-row {
+    -fx-background-color: #f3f4f6;
+    -fx-border-color: #5b6778 transparent #5b6778 transparent;
+    -fx-border-width: 2 0 2 0;
+}
+
+.month-summary-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #334155;
+}
+
+.month-summary-grid {
+    -fx-padding: 6 0 6 8;
+}
+
+.month-summary-key {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #475569;
+}
+
+.month-summary-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1f2937;
+}

@@ -18,7 +18,7 @@ public class TransactionFileService {
 
     public void saveTransactions(Path path, List<Transaction> transactions) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-            writer.write("date;type;description;accountEffect;grossInterestRate;taxBernd;tobiasSplit;berndSplit");
+            writer.write("date;type;description;accountEffect;grossInterestRate;taxBernd;tobiasSplit;berndSplit;enteredBy");
             writer.newLine();
 
             for (Transaction tx : transactions) {
@@ -39,6 +39,9 @@ public class TransactionFileService {
             String line = reader.readLine(); // Kopfzeile überspringen
 
             while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) {
+                    continue;
+                }
                 transactions.add(fromCsvLine(line));
             }
         }
@@ -54,21 +57,27 @@ public class TransactionFileService {
                 + tx.getGrossInterestRate().toPlainString() + ";"
                 + tx.getTaxBernd().toPlainString() + ";"
                 + tx.getTobiasSplit().toPlainString() + ";"
-                + tx.getBerndSplit().toPlainString();
+                + tx.getBerndSplit().toPlainString() + ";"
+                + escape(tx.getEnteredBy());
     }
 
     private Transaction fromCsvLine(String line) {
         String[] parts = line.split(";", -1);
 
+        if (parts.length < 8) {
+            throw new IllegalArgumentException("Ungültige CSV-Zeile: " + line);
+        }
+
         LocalDate date = LocalDate.parse(parts[0]);
         TransactionType type = TransactionType.valueOf(parts[1]);
         String description = parts[2];
-        String enteredBy = parts[2];
         BigDecimal accountEffect = new BigDecimal(parts[3]);
         BigDecimal grossInterestRate = new BigDecimal(parts[4]);
         BigDecimal taxBernd = new BigDecimal(parts[5]);
         BigDecimal tobiasSplit = new BigDecimal(parts[6]);
         BigDecimal berndSplit = new BigDecimal(parts[7]);
+
+        String enteredBy = parts.length > 8 ? parts[8] : "Tobias";
 
         Split split = new Split(tobiasSplit, berndSplit);
 
@@ -81,11 +90,13 @@ public class TransactionFileService {
                 taxBernd,
                 split,
                 enteredBy
-                
         );
     }
 
     private String escape(String text) {
+        if (text == null) {
+            return "";
+        }
         return text.replace(";", ",");
     }
 }

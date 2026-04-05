@@ -273,49 +273,65 @@ public class AccountController {
 		
 	//refresh Entries From Manager
 		private void refreshEntriesFromManager() {
-			entries.clear();
-			
-			String personFilter = view.getPersonFilterBox().getValue();
-			String typFilter = view.getTypFilterBox().getValue();
-			String yearFilter = view.getYearFilterBox().getValue();
-			String monthFilter = view.getMonthFilterBox().getValue();
-			
-			List<Transaction> filteredTransactions = new ArrayList<>();
-			
-			for (Transaction tx : manager.getAllTransactions()) {
-				if(matchesPersonFilter(tx, personFilter) && matchesTypFilter(tx, typFilter) && matchesYearFilter(tx, yearFilter)&& matchesMonthFilter(tx, monthFilter)) {
-				filteredTransactions.add(tx);
-				}
-			}
-			filteredTransactions.sort(Comparator.comparing(Transaction::getDate));
-			if(!shouldShowMonthSummaries()) {
-				for ( int i = filteredTransactions.size() -1; i >= 0; i--) {
-				UiEntry entry = uiEntryMapper.mapTransactionToEntry(filteredTransactions.get(i));
-				entries.add(entry);
-				}
-				return;
-			}
-		
-		YearMonth currentMonth = null;
-		
-		for (int i = filteredTransactions.size() -1; i >= 0; i--) {
-			Transaction tx = filteredTransactions.get(i);
-			YearMonth txMonth = YearMonth.from(tx.getDate());
-			if( currentMonth == null) {
-				currentMonth = txMonth;
-			}else if(!txMonth.equals(currentMonth)) {
-				entries.add(createMonthSummaryEntry(currentMonth));
-				currentMonth = txMonth;
-			}
-			UiEntry entry = uiEntryMapper.mapTransactionToEntry(tx);
-			entries.add(entry);
-			}
-		if(currentMonth != null) {
-			entries.add(createMonthSummaryEntry(currentMonth));
+		    entries.clear();
+
+		    String personFilter = view.getPersonFilterBox().getValue();
+		    String typFilter = view.getTypFilterBox().getValue();
+		    String yearFilter = view.getYearFilterBox().getValue();
+		    String monthFilter = view.getMonthFilterBox().getValue();
+
+		    List<Transaction> allTransactions = manager.getAllTransactions();
+		    List<Integer> filteredManagerIndices = new ArrayList<>();
+
+		    for (int i = 0; i < allTransactions.size(); i++) {
+		        Transaction tx = allTransactions.get(i);
+
+		        if (matchesPersonFilter(tx, personFilter)
+		                && matchesTypFilter(tx, typFilter)
+		                && matchesYearFilter(tx, yearFilter)
+		                && matchesMonthFilter(tx, monthFilter)) {
+		            filteredManagerIndices.add(i);
+		        }
+		    }
+
+		    filteredManagerIndices.sort(
+		            Comparator.comparing(i -> allTransactions.get(i).getDate())
+		    );
+
+		    if (!shouldShowMonthSummaries()) {
+		        for (int i = filteredManagerIndices.size() - 1; i >= 0; i--) {
+		            int managerIndex = filteredManagerIndices.get(i);
+		            Transaction tx = allTransactions.get(managerIndex);
+
+		            UiEntry entry = uiEntryMapper.mapTransactionToEntry(tx, managerIndex);
+		            entries.add(entry);
+		        }
+		        return;
+		    }
+
+		    YearMonth currentMonth = null;
+
+		    for (int i = filteredManagerIndices.size() - 1; i >= 0; i--) {
+		        int managerIndex = filteredManagerIndices.get(i);
+		        Transaction tx = allTransactions.get(managerIndex);
+
+		        YearMonth txMonth = YearMonth.from(tx.getDate());
+
+		        if (currentMonth == null) {
+		            currentMonth = txMonth;
+		        } else if (!txMonth.equals(currentMonth)) {
+		            entries.add(createMonthSummaryEntry(currentMonth));
+		            currentMonth = txMonth;
+		        }
+
+		        UiEntry entry = uiEntryMapper.mapTransactionToEntry(tx, managerIndex);
+		        entries.add(entry);
+		    }
+
+		    if (currentMonth != null) {
+		        entries.add(createMonthSummaryEntry(currentMonth));
+		    }
 		}
-			
-		}
-		 
 		private boolean matchesPersonFilter(Transaction tx, String filter) {
 			if(filter == null || "Alle".equals(filter)) {
 				return true;
@@ -447,50 +463,57 @@ public class AccountController {
 		
 		// Transaktion löschen
 		private void handleDelete() {
-			    int selectedIndex = view.getEntriesTable().getSelectionModel().getSelectedIndex();
+		    UiEntry selectedEntry = view.getEntriesTable().getSelectionModel().getSelectedItem();
 
-			    if (selectedIndex < 0) {
-			        view.getStatusLabel().setText("Bitte eine Buchung auswählen");
-			        return;
-			    }
+		    if (selectedEntry == null) {
+		        view.getStatusLabel().setText("Bitte eine Buchung auswählen");
+		        return;
+		    }
 
-			    int managerIndex = manager.getAllTransactions().size() - 1 - selectedIndex;
-			    
-			    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			    alert.setTitle("Löschen bestätigen");
-			    alert.setHeaderText("Buchung wirklich löschen?");
-			    alert.setContentText("Die ausgewählte Buchung wird dauerhaft entfernt.");
+		    if (selectedEntry.isMonthSummary() || selectedEntry.getManagerIndex() == null) {
+		        view.getStatusLabel().setText("Monatsbilanzen können nicht gelöscht werden");
+		        return;
+		    }
 
-			    var result = alert.showAndWait();
-			    if (result.isEmpty() || result.get() != ButtonType.OK) {
-			        view.getStatusLabel().setText("Löschen abgebrochen.");
-			        return;
-			    }
-			   
-			   
-			    manager.removeTransactionAt(managerIndex);
-			    editMode = false;
-			    editingManagerIndex = -1;
-			    afterSuccessfulSubmit();
+		    int managerIndex = selectedEntry.getManagerIndex();
 
-			    view.getStatusLabel().setText("Buchung wurde gelöscht.");
+		    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		    alert.setTitle("Löschen bestätigen");
+		    alert.setHeaderText("Buchung wirklich löschen?");
+		    alert.setContentText("Die ausgewählte Buchung wird dauerhaft entfernt.");
+
+		    var result = alert.showAndWait();
+		    if (result.isEmpty() || result.get() != ButtonType.OK) {
+		        view.getStatusLabel().setText("Löschen abgebrochen.");
+		        return;
+		    }
+
+		    manager.removeTransactionAt(managerIndex);
+		    editMode = false;
+		    editingManagerIndex = -1;
+		    afterSuccessfulSubmit();
+
+		    view.getStatusLabel().setText("Buchung wurde gelöscht.");
 		}
-		
 		private int getSelectedManagerIndex() {
-		    int selectedTableIndex = view.getEntriesTable().getSelectionModel().getSelectedIndex();
+		    UiEntry selectedEntry = view.getEntriesTable().getSelectionModel().getSelectedItem();
 
-		    if (selectedTableIndex < 0) {
+		    if (selectedEntry == null) {
 		        return -1;
 		    }
 
-		    return manager.getAllTransactions().size() - 1 - selectedTableIndex;
+		    if (selectedEntry.isMonthSummary() || selectedEntry.getManagerIndex() == null) {
+		        return -1;
+		    }
+
+		    return selectedEntry.getManagerIndex();
 		}
 		
 		private void loadSelectedTransactionIntoForm() {
 		    int managerIndex = getSelectedManagerIndex();
 
 		    if (managerIndex < 0) {
-		        view.getStatusLabel().setText("Bitte eine Buchung auswählen");
+		        view.getStatusLabel().setText("Bitte eine echte Buchung auswählen");
 		        return;
 		    }
 
@@ -742,6 +765,4 @@ public class AccountController {
 		public TransactionManager getManager() {
 			return manager;
 		}
-		
-
 }
