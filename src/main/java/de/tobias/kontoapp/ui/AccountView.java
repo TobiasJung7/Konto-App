@@ -1,8 +1,7 @@
 package de.tobias.kontoapp.ui;
 
-import java.math.RoundingMode;
+
 import java.time.Month;
-import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -26,17 +25,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.Node;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.control.CheckBox;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+import de.tobias.kontoapp.application.AccountProfile;
 
 public class AccountView {
 
@@ -73,6 +66,14 @@ public class AccountView {
     
     private ComboBox<String> enteredByBox;
     private Label enteredByLabel;
+    
+    private ComboBox<AccountProfile> accountBox;
+    private Label accountLabel;
+    private HBox accountRow;
+    
+    private Label accountTitleLabel;
+    private Label activeAccountLabel;
+    private VBox accountHeaderBox;
 
     private Label labelDatum;
     private DatePicker datumPicker;
@@ -96,6 +97,7 @@ public class AccountView {
     private Label tobias;
     private Label bernd;
     private Label gesamt;
+    private String currentPrimaryPersonName = "Tobias";
     private Label gesamtImpactLabel;
     private Label tobiasImpactLabel;
     private Label berndImpactLabel;
@@ -121,6 +123,8 @@ public class AccountView {
     private HBox personFilterRow;
     private HBox typFilterRow;
     private HBox yearFilterRow;
+    
+   
 
     
 
@@ -219,7 +223,7 @@ public class AccountView {
                 if (entry.isMonthSummary()) {
                     setText(null);
                 } else {
-                    setText(item);
+                    setText(mapVisiblePersonText(item));
                 }
             }
         });
@@ -339,7 +343,7 @@ public class AccountView {
         berndLabel = new Label();
 
         gesamt = new Label("Gesamt:");
-        tobias = new Label("Tobias:");
+        tobias = new Label(currentPrimaryPersonName + ": ");
         bernd = new Label("Bernd:");
 
         gesamtImpactLabel = new Label();
@@ -360,7 +364,7 @@ public class AccountView {
         enteredByBox = new ComboBox<>();
         enteredByLabel = new Label("Eingetragen von: ");
         enteredByBox.setPromptText("Bitte wählen");
-        enteredByBox.getItems().addAll("Tobias", "Bernd", "Anderer");
+        enteredByBox.getItems().addAll("Tobias", "Vater", "Schwester", "Anderer");
         
         ownerLabel = new Label("Zuordnung: ");
         ownerBox = new ComboBox<>();
@@ -421,10 +425,11 @@ public class AccountView {
         clearButton.setDisable(false);
         
         setupPlaceholderComboBox(typBox, "Bitte wählen");
-        setupPlaceholderComboBox(ownerBox, "Bitte wählen");
+        setupProfileAwareComboBox(ownerBox, "Bitte wählen");
         setupPlaceholderComboBox(transferBox, "Bitte wählen");
         setupPlaceholderComboBox(enteredByBox, "Bitte wählen");
         setupPlaceholderComboBox(monthBox, "Bitte wählen");
+        setupProfileAwareComboBox(personFilterBox, "Alle");
         
 
         enteredByRow = new HBox(15, enteredByLabel, enteredByBox);
@@ -473,6 +478,30 @@ public class AccountView {
         datumPicker.setPrefHeight(36);
         monthBox.setPrefHeight(36);
         yearSpinner.setPrefHeight(36);
+        
+        accountTitleLabel = new Label("Aktives Konto");
+        activeAccountLabel = new Label("Gerade geöffnet: Tobias");
+
+        accountLabel = new Label("Konto: ");
+        accountBox = new ComboBox<>();
+        accountBox.getItems().addAll(AccountProfile.values());
+        accountBox.setValue(AccountProfile.TOBIAS);
+        accountBox.setPrefWidth(180);
+
+        accountRow = new HBox(15, accountLabel, accountBox);
+        accountRow.setAlignment(Pos.CENTER_LEFT);
+        accountRow.getStyleClass().add("input-row");
+        accountLabel.setMinWidth(150);
+        accountBox.getStyleClass().add("konto-combo-box");
+
+        accountHeaderBox = new VBox(6, accountTitleLabel, accountRow, activeAccountLabel);
+        accountHeaderBox.getStyleClass().add("card");
+        accountTitleLabel.getStyleClass().add("card-title");
+        activeAccountLabel.getStyleClass().add("active-account-label");
+        accountRow.getStyleClass().add("input-row");
+        accountLabel.setMinWidth(150);
+
+        accountBox.getStyleClass().add("konto-combo-box");
 
         Label balanceTitle = new Label("Kontostände");
         formTitle = new Label("Buchung");
@@ -497,6 +526,7 @@ public class AccountView {
                 statusLabel,
                 buttonRow
         );
+        
         VBox tableCard = createCard(tableTitle, filterRow, entriesTable);
         
         entriesTable.getStyleClass().add("entries-table");
@@ -598,7 +628,7 @@ public class AccountView {
         formCard.getStyleClass().add("card");
         tableCard.getStyleClass().add("card");
 
-        root = new VBox(16, balanceCard, formCard, tableCard);
+        root = new VBox(16, accountHeaderBox, balanceCard, formCard, tableCard);
         root.getStyleClass().add("root-pane");
         root.setFocusTraversable(true);
     }
@@ -618,6 +648,75 @@ public class AccountView {
                 }
             }
         });
+    }
+    private String mapVisiblePersonText(String text) {
+        if (text == null) {
+            return null;
+        }
+
+        if (text.equals("Tobias")) {
+            return currentPrimaryPersonName;
+        }
+
+        return text;
+    }
+    private void setupProfileAwareComboBox(ComboBox<String> box, String placeholder) {
+        box.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(placeholder);
+                    setStyle("-fx-text-fill: #888888;");
+                } else {
+                    setText(mapVisiblePersonText(item));
+                    setStyle("");
+                }
+            }
+        });
+
+        box.setCellFactory(listView -> new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(mapVisiblePersonText(item));
+                }
+            }
+        });
+    }
+    public void applyProfileTexts(AccountProfile profile) {
+        currentPrimaryPersonName = profile.getPrimaryPersonName();
+
+        tobias.setText(currentPrimaryPersonName + ":");
+
+        String oldEnteredBy = enteredByBox.getValue();
+
+        enteredByBox.getItems().setAll(
+            currentPrimaryPersonName,
+            "Vater",
+            "Anderer"
+        );
+
+        if (oldEnteredBy != null && enteredByBox.getItems().contains(oldEnteredBy)) {
+            enteredByBox.setValue(oldEnteredBy);
+        } else {
+            enteredByBox.getSelectionModel().clearSelection();
+            enteredByBox.setValue(null);
+        }
+
+        setupProfileAwareComboBox(ownerBox, "Bitte wählen");
+        setupProfileAwareComboBox(personFilterBox, "Alle");
+
+        ownerBox.setValue(ownerBox.getValue());
+        personFilterBox.setValue(personFilterBox.getValue());
+
+        entriesTable.refresh();
     }
     private HBox createBalanceRow(Label nameLabel, Label valueLabel, Label impactLabel) {
         nameLabel.setMinWidth(80);
@@ -917,6 +1016,20 @@ public class AccountView {
 
 	public TextField getTaxBerndField() {
 		return taxBerndField;
+	}
+	public ComboBox<AccountProfile> getAccountBox() {
+	    return accountBox;
+	}
+
+	public HBox getAccountRow() {
+	    return accountRow;
+	}
+
+	public Label getAccountLabel() {
+	    return accountLabel;
+	}
+	public Label getActiveAccountLabel() {
+	    return activeAccountLabel;
 	}
 
 	public void setBeschreibung(TextField beschreibung) {

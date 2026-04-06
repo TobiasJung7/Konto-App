@@ -29,7 +29,7 @@ import de.tobias.kontoapp.util.MoneyUtil;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-
+import de.tobias.kontoapp.application.AccountProfile;
 
 
 public class AccountController {
@@ -44,7 +44,7 @@ public class AccountController {
     private boolean editMode;
     private int editingManagerIndex = -1;
     private final TransactionFileService fileService = new TransactionFileService();
-    private final Path savePath = Path.of("transactions.csv");
+    private AccountProfile currentProfile = AccountProfile.TOBIAS;
     
     
     public AccountController(
@@ -68,12 +68,25 @@ public class AccountController {
         registerListeners();
         clearForm();
         updateFormMode();
-        refreshEntriesFromManager();
-        refreshBalanceLabels();
         updateFilterMode();
+        view.getAccountBox().setValue(currentProfile);
+        loadCurrentProfileFromFile();
+        view.applyProfileTexts(currentProfile);
+        updateAccountUi();
     }
 		
 	private void registerListeners() {
+		this.view.getAccountBox().valueProperty().addListener((obs, oldProfile, newProfile) -> {
+		    if (newProfile == null || newProfile == oldProfile) {
+		        return;
+		    }
+
+		    saveToFile();
+		    currentProfile = newProfile;
+		    loadCurrentProfileFromFile();
+		    view.applyProfileTexts(currentProfile);
+		    updateAccountUi();
+		});
 		 	this.view.getYearFilterBox().valueProperty().addListener((obs, oldValue, newValue) -> { updateFilterMode(); refreshEntriesFromManager(); });
 	        this.view.getPersonFilterBox().valueProperty().addListener((obs, oldValue, newValue) -> refreshEntriesFromManager());
 	        this.view.getMonthFilterBox().valueProperty().addListener((obs, oldValue, newValue) -> refreshEntriesFromManager());
@@ -173,16 +186,19 @@ public class AccountController {
 			    refreshBalanceLabels();
 			    clearForm();
 				}
+		
 		private void saveToFile() {
 		    try {
-		        fileService.saveTransactions(savePath, manager.getAllTransactions());
+		        fileService.saveTransactions(getSavePath(), manager.getAllTransactions());
 		    } catch (IOException e) {
 		        view.getStatusLabel().setText("Fehler beim Speichern der Datei");
 		        e.printStackTrace();
 		    }
-		    
 		}
-				
+		private void updateAccountUi() {
+		    view.getActiveAccountLabel().setText("Gerade geöffnet: " + currentProfile.getDisplayName());
+		    view.setFormTitleText("Buchung – " + currentProfile.getDisplayName());
+		}	
 				
 				
 		private String validateInterestInput() {
@@ -761,6 +777,24 @@ public class AccountController {
 		    updateFormMode();
 		   
 	}
+		private Path getSavePath() {
+		    return Path.of(currentProfile.getFileName());
+		}
+		
+		private void loadCurrentProfileFromFile() {
+		    try {
+		        List<Transaction> loadedTransactions = fileService.loadTransactions(getSavePath());
+		        manager.replaceAllTransactions(loadedTransactions);
+
+		        refreshEntriesFromManager();
+		        refreshBalanceLabels();
+		        clearForm();
+		        view.getStatusLabel().setText("Konto " + currentProfile.getDisplayName() + " geladen.");
+		    } catch (IOException e) {
+		        view.getStatusLabel().setText("Fehler beim Laden der Datei");
+		        e.printStackTrace();
+		    }
+		}
 
 		public TransactionManager getManager() {
 			return manager;

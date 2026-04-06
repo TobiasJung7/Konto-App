@@ -384,3 +384,8 @@
     -fx-font-weight: 700;
     -fx-text-fill: #1f2937;
 }
+.active-account-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #475569;
+}
