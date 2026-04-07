@@ -1,0 +1,143 @@
+date;type;description;accountEffect;grossInterestRate;taxBernd;tobiasSplit;berndSplit;enteredBy
+2024-01-23;Deposit;Einzahlung: Einzahlung akzeptiert: DE31120300001201989140 auf DE46120700700121125577;10.00;0;0;10.00;0;Tobias
+2024-01-23;Expenses;Investment: Ausführung Direktkauf XF000BTC0017 C1006688315;-3.99;0;0;-3.99;0;Tobias
+2024-01-23;Expenses;Investment: Ausführung Handel Direktkauf Kauf IE000KCS7J59 HSBC MSCIEM ETF DLA 9477018520240123;-4.00;0;0;-4.00;0;Tobias
+2024-02-05;Deposit;Einzahlung;30000;0;0;30000;0;Tobias
+2024-01-23;Expenses;Investment;-2;0;0;-2;0;Tobias
+2024-02-12;Deposit;Einzahlung;20000;0;0;0;20000;Tobias
+2024-02-16;Expenses;Sparplan EM;-21;0;0;-21;0;Tobias
+2024-02-17;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-03-01;Interest;Zinsen;123.22;123.22;0;83.22;40.00;Tobias
+2024-03-18;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2024-03-18;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-03-25;Deposit;Einnahme;26000;0;0;0;26000;Tobias
+2024-03-25;Deposit;Einnahme;50000;0;0;0;50000;Tobias
+2024-03-25;Expenses;Kauf Staatsanleihen;-15000;0;0;-15000;0;Tobias
+2024-03-25;Expenses;Kauf Staatsanleihe;-60975.76;0;0;0;-60975.76;Tobias
+2024-04-01;Interest;Zinsen;172.21;172.21;0.00;91.55;80.66;Tobias
+2024-04-16;Expenses;Sparplan EM;-21;0;0;-21;0;Tobias
+2024-04-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-05-01;Interest;Zinsen;166.67;166.67;0;49.86;116.81;Tobias
+2024-05-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2024-05-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-06-01;Interest;Zinsen;162.62;172.22;9.60;51.35;111.27;Tobias
+2024-06-17;Expenses;Sparplan Em;-21.00;0;0;-21.00;0;Tobias
+2024-06-17;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-07-01;Interest;Zinsen;115.26;160.07;44.81;47.58;67.68;Tobias
+2024-07-16;Expenses;Sparplan Em ;-21;0;0;-21;0;Tobias
+2024-07-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-08-01;Interest;Zinsen;116.26;161.46;45.20;47.87;68.39;Tobias
+2024-08-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2024-08-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-09-01;Interest;Zinsen;116.77;162.16;45.39;47.97;68.80;Tobias
+2024-09-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2024-09-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-10-01;Interest;Zinsen;152.30;152.30;0;44.94;107.36;Tobias
+2024-10-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2024-10-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-11-01;Interest;Zinsen;105.98;147.16;41.18;43.28;62.70;Tobias
+2024-11-18;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2024-11-18;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-12-01;Interest;Zinsen;97.34;135.15;37.81;39.66;57.68;Tobias
+2024-12-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2024-12-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2024-12-19;Expenses;Tax Optimisation;-42.62;0;0;0;-42.62;Tobias
+2025-01-01;Interest;Zinsen;134.82;134.82;0;39.46;95.36;Tobias
+2025-01-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-01-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2025-02-01;Interest;Zinsen;129.02;129.02;0;37.66;91.36;Tobias
+2025-02-17;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-02-17;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2025-03-17;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2025-04-01;Interest;Zinsen;111.55;111.55;0;32.36;79.19;Tobias
+2025-04-09;Expenses;Investment Stoxx Europe 600;-1760.60;0;0;-1760.60;0;Tobias
+2025-04-09;Expenses;Investment MSCI World;-2638.25;0;0;-2638.25;0;Tobias
+2025-04-09;Expenses;Investment MSCI World;-20106.66;0;0;0;-20106.66;Tobias
+2025-04-11;Expenses;Investments DAX;-149.85;0;0;0;-149.85;Tobias
+2025-04-11;Expenses;Investment DAX;-13393.40;0;0;0;-13393.40;Tobias
+2025-04-11;Deposit;Einnahme Rücklauf Staatsanleihen;63081.89;0;0;0;63081.89;Tobias
+2025-04-11;Deposit;Einnahmen Rücklauf Staatsanleihen;15518.11;0;0;15518.11;0;Tobias
+2025-04-11;Expenses;Steuer Staatsanleihen;-715.69;0;0;0;-715.69;Tobias
+2025-04-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-04-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2025-04-18;Expenses;Ausgabe GreenRoom;-110;0;0;-110;0;Tobias
+2025-05-01;Interest;Zinsen;108.40;150.50;42.10;50.16;58.24;Tobias
+2025-05-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-05-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2025-06-01;Interest;Zinsen;124.60;173.02;48.42;51.58;73.02;Tobias
+2025-06-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-06-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2025-07-01;Interest;Zinsen;111.74;155.14;43.40;46.12;65.62;Tobias
+2025-07-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-07-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2025-07-18;Expenses;Überweisung an Konto Tobas;-200;0;0;-200;0;Tobias
+2025-07-27;Expenses;Überweisung Semesterbeitrag;-335.65;0;0;0;-335.65;Tobias
+2025-08-16;Expenses;Ausgaben;-493.22;0;0;-493.22;0;Tobias
+2025-08-16;Expenses;Ausgaben;-86.39;0;0;0;-86.39;Tobias
+2025-08-18;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-08-18;Expenses;Sparplan World;-49.00;0;0;-49.00;0;Tobias
+2025-09-01;Interest;Zinsen;110.03;152.79;42.76;45.23;64.80;Tobias
+2025-09-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-09-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2025-09-16;Deposit;Einnahmen;201.00;0;0;201.00;0;Tobias
+2025-09-16;Expenses;Ausgabe;-825.32;0;0;0;-825.32;Tobias
+2025-10-01;Interest;Zinsen;105.60;152.30;46.70;42.63;62.97;Tobias
+2025-10-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-10-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2025-11-01;Interest;Zinsen;108.88;151.20;42.32;42.57;66.31;Tobias
+2025-12-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-12-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2025-12-01;Interest;Zinsen;105.42;146.38;40.96;41.16;64.26;Tobias
+2025-11-17;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2025-11-17;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2026-01-01;Interest;Zinsen;151.34;151.34;0;44.34;107.00;Tobias
+2026-01-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2026-01-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2026-01-23;Expenses;Investment BionTech;-98;0;0;-98;0;Tobias
+2026-01-23;Expenses;Investment BionTech;-403;0;0;-403;0;Tobias
+2026-02-01;Interest;Zinsen;151.22;151.22;0;42.19;109.03;Tobias
+2026-02-06;Deposit;Einzalhlung;7000;0;0;7000;0;Tobias
+2026-02-16;Expenses;Sparplan Em;-21;0;0;-21;0;Tobias
+2026-02-16;Expenses;Sparplan World;-49;0;0;-49;0;Tobias
+2026-03-01;Interest;Zinsen;144.98;144.98;0;46.35;98.63;Tobias
+2026-03-16;Expenses;Sparplan Em;-15;0;0;-15;0;Tobias
+2026-03-16;Expenses;SparPlan World;-50;0;0;-50;0;Tobias
+2026-03-16;Expenses;Sparplan Europe;-30;0;0;-30;0;Tobias
+2026-03-16;Expenses;Sparplan BionTech;-5;0;0;-5;0;Tobias
+2026-01-01;Transfer;Schuldenausgleich;0;0;0;1078.00;-1078.00;Tobias
+2026-02-06;Transfer;Semester Beitrag;0;0;0;335.65;-335.65;Tobias
+2026-02-03;Transfer;Mcces;0;0;0;35.66;-35.66;Tobias
+2026-02-09;Transfer;REWE;0;0;0;5.63;-5.63;Tobias
+2026-02-01;Transfer;Getränke holen;0;0;0;85.55;-85.55;Tobias
+2026-02-23;Transfer;Breidohr;0;0;0;30.59;-30.59;Tobias
+2026-02-16;Transfer;TÜV;0;0;0;165.00;-165.00;Tobias
+2026-02-16;Transfer;Tanken;0;0;0;112.21;-112.21;Tobias
+2026-02-16;Transfer;REWE;0;0;0;47.49;-47.49;Tobias
+2026-03-02;Transfer;Ski Karten Ischgl;0;0;0;815.00;-815.00;Tobias
+2026-03-02;Transfer;Hütte;0;0;0;54;-54;Tobias
+2026-03-02;Transfer;Kitzloch;0;0;0;38.50;-38.50;Tobias
+2026-03-02;Transfer;Kitzloch;0;0;0;47.00;-47.00;Tobias
+2026-03-02;Transfer;Schmuggler Alm;0;0;0;28.69;-28.69;Tobias
+2026-03-02;Transfer;Kitzloch;0;0;0;35;-35;Tobias
+2026-03-03;Transfer;Billa;0;0;0;5.61;-5.61;Tobias
+2026-03-05;Transfer;Kitzloch;0;0;0;16;-16;Tobias
+2026-03-04;Transfer;KassFunitel;0;0;0;36;-36;Tobias
+2026-03-06;Transfer;Billa;0;0;0;4.69;-4.69;Tobias
+2026-03-09;Transfer;HotelSonne;0;0;0;122;-122;Tobias
+2026-03-09;Transfer;Schmuggler Alm;0;0;0;86.23;-86.23;Tobias
+2026-03-09;Transfer;Billa;0;0;0;4.12;-4.12;Tobias
+2026-03-10;Transfer;Tanken;0;0;0;119.22;-119.22;Tobias
+2026-03-01;Transfer;Taschengeld 2026 inkl. halber Dezember 2025: 1200 Euro + 50 Euro = 1250 Euro;0;0;0;1250;-1250;Tobias
+2026-03-25;Expenses;Investment: MSCI World;-29979.48;0;0;0;-29979.48;Tobias
+2026-03-25;Transfer;Waschstraße Brestol;0;0;0;17.00;-17.00;Tobias
+2026-03-25;Transfer;Tierarzt (Zeckenband);0;0;0;51.50;-51.50;Tobias
+2026-03-27;Transfer;Getränkemarkt;0;0;0;85;-85;Tobias
+2026-04-01;Interest;Zinsen;151.25;151.25;0;60.93;90.32;Tobias
+2026-04-02;Expenses;Sparplan Europe;-30.00;0;0;-30.00;0;Tobias
+2026-04-02;Expenses;Sparplan: EM;-15;0;0;-15;0;Tobias
+2026-04-02;Expenses;Investment: World;-50;0;0;-50;0;Tobias
+2026-04-02;Expenses;Investment: BionTech;-5;0;0;-5;0;Tobias
+2025-03-17;Expenses;Investment: EM;-21;0;0;-21;0;Tobias
+2025-03-01;Interest;Zinsen;108.36;108.36;0.00;31.53;76.83;Tobias
+2025-08-01;Interest;Zinsen;110.69;110.69;0;31.23;79.46;Tobias
+2026-03-25;Expenses;Investment: MSCI World;-21.52;0;0;0;-21.52;Tobias

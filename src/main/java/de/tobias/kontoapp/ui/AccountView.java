@@ -699,7 +699,7 @@ public class AccountView {
 
         enteredByBox.getItems().setAll(
             currentPrimaryPersonName,
-            "Vater",
+            "Bernd",
             "Anderer"
         );
 

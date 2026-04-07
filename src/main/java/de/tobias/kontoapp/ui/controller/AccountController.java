@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import de.tobias.kontoapp.application.InterestTransactionBuilder;
@@ -31,6 +32,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import de.tobias.kontoapp.application.AccountProfile;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.nio.file.StandardCopyOption;
+import de.tobias.kontoapp.persistence.StorageConfig;
 
 public class AccountController {
 	
@@ -45,7 +50,7 @@ public class AccountController {
     private int editingManagerIndex = -1;
     private final TransactionFileService fileService = new TransactionFileService();
     private AccountProfile currentProfile = AccountProfile.TOBIAS;
-    
+    private final StorageConfig storageConfig = new StorageConfig();
     
     public AccountController(
             AccountView view,
@@ -189,6 +194,7 @@ public class AccountController {
 		
 		private void saveToFile() {
 		    try {
+		        createBackupIfFileExists();
 		        fileService.saveTransactions(getSavePath(), manager.getAllTransactions());
 		    } catch (IOException e) {
 		        view.getStatusLabel().setText("Fehler beim Speichern der Datei");
@@ -540,6 +546,7 @@ public class AccountController {
 
 		    view.getBeschreibung().setText(tx.getDescription());
 		    view.getDatumPicker().setValue(tx.getDate());
+		    view.getEnteredByBox().setValue(tx.getEnteredBy());
 
 		    if (tx.getType() == TransactionType.Interest) {
 		        view.getTypBox().setValue("Zinsen");
@@ -548,9 +555,10 @@ public class AccountController {
 		        view.getGrossInterestField().setText(moneyUtil.formatAmount(tx.getGrossInterestRate()));
 		        view.getTaxBerndField().setText(moneyUtil.formatAmount(tx.getTaxBernd()));
 
-		        view.getMonthBox().setValue(tx.getDate().getMonth());
-		        view.getYearSpinner().getValueFactory().setValue(tx.getDate().getYear());
-
+		        LocalDate interestMonthDate = tx.getDate().minusMonths(1);
+		        view.getMonthBox().setValue(interestMonthDate.getMonth());
+		        view.getYearSpinner().getValueFactory().setValue(interestMonthDate.getYear());
+		        
 		        view.getBetrag().clear();
 		        view.getOwnerBox().setValue(null);
 		        view.getTransferBox().setValue(null);
@@ -778,8 +786,8 @@ public class AccountController {
 		   
 	}
 		private Path getSavePath() {
-		    return Path.of(currentProfile.getFileName());
-		}
+			return storageConfig.getDataDirectory().resolve(currentProfile.getFileName());
+			}
 		
 		private void loadCurrentProfileFromFile() {
 		    try {
@@ -795,7 +803,28 @@ public class AccountController {
 		        e.printStackTrace();
 		    }
 		}
+		private void createBackupIfFileExists() throws IOException {
+		    Path savePath = getSavePath();
 
+		    if (!Files.exists(savePath)) {
+		        return;
+		    }
+
+		    Path backupDir = getSavePath().getParent().resolve("backups");
+		    Files.createDirectories(backupDir);
+
+		    String fileName = savePath.getFileName().toString();
+		    String timestamp = LocalDateTime.now()
+		            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+
+		    Path backupPath = backupDir.resolve(
+		            fileName.replace(".csv", "") + "_" + timestamp + ".bak.csv"
+		    );
+
+		    Files.copy(savePath, backupPath, StandardCopyOption.REPLACE_EXISTING);
+		}
+
+		
 		public TransactionManager getManager() {
 			return manager;
 		}
